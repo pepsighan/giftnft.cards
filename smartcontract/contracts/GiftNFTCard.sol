@@ -125,22 +125,36 @@ contract GiftNFTCard is
         return _getGiftCard(tokenId);
     }
 
-    /// Unwraps the amount stored in the gift card and withdraws it in the owner's wallet.
-    function unwrapGiftCard(uint256 tokenId) public {
+    /// Unwraps the gift card of the owner.
+    function _unwrapGiftCard(uint256 tokenId, address owner) private {
         require(
-            ERC721Upgradeable.ownerOf(tokenId) == msg.sender,
+            ERC721Upgradeable.ownerOf(tokenId) == owner,
             "GiftNFTCard: caller is not owner"
         );
         GiftCard memory gift = _getGiftCard(tokenId);
         require(gift.isUnwrapped == false, "GiftNFTCard: cannot unwrap already unwrapped gift card");
 
-        address payable sender = payable(msg.sender);
+        address payable sender = payable(owner);
         // Send the gift amount to the caller.
         (bool sent, ) = sender.call{value: gift.amount}("");
         require(sent, "GiftNFTCard: failed to unwrap gift card");
 
         // The gift is unwrapped now. Do not allow the same gift to redeem the amount again.
         _giftMap[tokenId].isUnwrapped = true;
+    }
+
+    /// Unwraps the amount stored in the gift card and withdraws it in the owner's wallet.
+    function unwrapGiftCard(uint256 tokenId) public {
+        _unwrapGiftCard(tokenId, msg.sender);
+    }
+
+    /// Unwraps the gift card for the user using the admin account so that the unwrapper does not have to
+    /// directly pay gas prices.
+    function unwrapGiftCardByAdmin(uint256 tokenId, bytes signature) public requireOwner {
+        /// Only the signed message of the owner will be able to unwrap the gift.
+        bytes32 msgHash = prefixed(keccak256(tokenId));
+        address giftCardOwner = _recoverGiftCardOwner(msgHash, signature);
+        _unwrapGiftCard(tokenId, giftCardOwner);
     }
 
     /// Burns the gift card for good.
@@ -154,6 +168,25 @@ contract GiftNFTCard is
 
         ERC721BurnableUpgradeable.burn(tokenId);
         _giftMap[tokenId].isBurnt = true;
+    }
+
+    /// Recover the owner of the gift card from the signature.
+    function _recoverGiftCardOwner(bytes32 msgHash, bytes signature) private returns (address) {
+        require(signature.length == 65);
+
+        bytes32 r;
+        bytes32 s;
+        uint8 v;
+        assembly {
+            // First 32 bytes, after the length prefix.
+            r := mload(add(sig, 32))
+            // Second 32 bytes.
+            s := mload(add(sig, 64))
+            // Final byte (first byte of the next 32 bytes).
+            v := byte(0, mload(add(sig, 96)))
+        }
+
+        return ecrecover(msgHash, v, r, s);
     }
 
     // The following functions are overrides required by Solidity.
