@@ -150,7 +150,7 @@ contract GiftNFTCard is
 
     /// Unwraps the gift card for the user using the admin account so that the unwrapper does not have to
     /// directly pay gas prices.
-    function unwrapGiftCardByAdmin(uint256 tokenId, bytes signature) public requireOwner {
+    function unwrapGiftCardByAdmin(uint256 tokenId, bytes signature) public onlyOwner {
         /// Only the signed message of the owner will be able to unwrap the gift.
         bytes32 msgHash = prefixed(keccak256(tokenId));
         address giftCardOwner = _recoverGiftCardOwner(msgHash, signature);
