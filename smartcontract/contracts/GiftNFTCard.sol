@@ -259,6 +259,8 @@ contract GiftNFTCard is
         require(unwithdrawnFees > 0, "GiftNFTCard: no fees to withdraw yet");
 
         (bool sent, ) = payable(msg.sender).call{value: unwithdrawnFees}("");
+        require(sent, "GiftNFTCard: failed to withdraw fees");
+
         // Reset the withdrawn amount to full.
         _totalFeesWithdrawn = _totalFees;
     }
