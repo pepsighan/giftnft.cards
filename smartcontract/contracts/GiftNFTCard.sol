@@ -168,15 +168,16 @@ contract GiftNFTCard is
 
     /// Unwraps the gift card for the user using the admin account so that the unwrapper does not have to
     /// directly pay gas prices.
-    function unwrapGiftCardByAdmin(uint256 tokenId, bytes memory signature) public onlyOwner {
+    function unwrapGiftCardByAdmin(uint256 tokenId, address owner, bytes memory signature) public onlyOwner {
         /// Only the signed message of the owner will be able to unwrap the gift.
-        bytes32 msgHash = _prefixed(keccak256(abi.encodePacked(tokenId)));
+        bytes32 msgHash = _prefixed(keccak256(abi.encodePacked(tokenId, owner)));
         address giftCardOwner = _recoverGiftCardOwner(msgHash, signature);
 
         require(
             ERC721Upgradeable.ownerOf(tokenId) == giftCardOwner,
             "GiftNFTCard: caller is not owner"
         );
+        require(owner == giftCardOwner,  "GiftNFTCard: caller is not owner");
         GiftCard memory gift = _getGiftCard(tokenId);
 
         // Deduct the unwrap fees from the gift amount.
