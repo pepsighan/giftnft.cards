@@ -253,6 +253,16 @@ contract GiftNFTCard is
         return _totalFeesWithdrawn;
     }
 
+    /// Withdraw all the fees that are not yet withdrawn.
+    function withdrawFees() public onlyOwner {
+        uint256 unwithdrawnFees = _totalFees - _totalFeesWithdrawn;
+        require(unwithdrawnFees > 0, "GiftNFTCard: no fees to withdraw yet");
+
+        (bool sent, ) = payable(msg.sender).call{value: unwithdrawnFees}("");
+        // Reset the withdrawn amount to full.
+        _totalFeesWithdrawn = _totalFees;
+    }
+
     /// Recover the owner of the gift card from the signature.
     function _recoverGiftCardOwner(bytes32 msgHash, bytes memory signature)
         private
