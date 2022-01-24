@@ -80,7 +80,10 @@ contract GiftNFTCard is
         string memory signedBy
     ) public payable {
         // TODO: Require a minimum value of gift card amount.
-        require(msg.value > 0, "GiftNFTCard: gift card needs to have some amount");
+        require(
+            msg.value > 0,
+            "GiftNFTCard: gift card needs to have some amount"
+        );
 
         // Take a cut from the minting.
         uint256 mintFees = _calculateMintFees(msg.value);
@@ -90,7 +93,6 @@ contract GiftNFTCard is
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
         _safeMint(to, tokenId);
-
 
         // Store the metadata of the NFT in the map.
         _giftMap[tokenId] = GiftCard({
@@ -108,21 +110,30 @@ contract GiftNFTCard is
         _sentGifts[msg.sender].push(tokenId);
     }
 
-    /// Calculates the minting fees.
-    function _calculateMintFees() private pure returns (uint256) {
-        // TODO: Take a cut of the gift card amount.
-        return 0;
+    /// Calculates the minting fees. This is what we earn for the service we provide.
+    function _calculateMintFees(uint256 value) private pure returns (uint256) {
+        // TODO: Put an upper limit to the mint fees.
+        // Mint fees are 1% of the total value.
+        return value / 100;
     }
 
     /// Gets the gift card by the token id.
-    function _getGiftCard(uint256 tokenId) private view returns (GiftCard memory) {
+    function _getGiftCard(uint256 tokenId)
+        private
+        view
+        returns (GiftCard memory)
+    {
         GiftCard memory card = _giftMap[tokenId];
         require(card.isInitialized == true, "GiftNFTCard: gift card not found");
         return card;
     }
 
     /// Get gift card of the owner using index.
-    function getGiftCardByIndex(uint256 index) public view returns (GiftCard memory) {
+    function getGiftCardByIndex(uint256 index)
+        public
+        view
+        returns (GiftCard memory)
+    {
         uint256 tokenId = ERC721EnumerableUpgradeable.tokenOfOwnerByIndex(
             msg.sender,
             index
@@ -136,7 +147,11 @@ contract GiftNFTCard is
     }
 
     /// Get gift card sent by the sender using index.
-    function getSentGiftCardByIndex(uint256 index) public view returns (GiftCard memory) {
+    function getSentGiftCardByIndex(uint256 index)
+        public
+        view
+        returns (GiftCard memory)
+    {
         uint256[] memory tokenIds = _sentGifts[msg.sender];
         require(tokenIds.length > index, "GiftNFTCard: gift card not found");
         uint256 tokenId = tokenIds[index];
@@ -144,8 +159,13 @@ contract GiftNFTCard is
     }
 
     /// Unwraps the gift and sends the amount stored in the gift card to the owner.
-    function _unwrapGiftCardAndDisburse(GiftCard memory giftCard, address owner) private {
-        require(gift.isUnwrapped == false, "GiftNFTCard: cannot unwrap already unwrapped gift card");
+    function _unwrapGiftCardAndDisburse(GiftCard memory gift, address owner)
+        private
+    {
+        require(
+            gift.isUnwrapped == false,
+            "GiftNFTCard: cannot unwrap already unwrapped gift card"
+        );
 
         address payable sender = payable(owner);
         // Send the gift amount to the caller.
@@ -153,45 +173,58 @@ contract GiftNFTCard is
         require(sent, "GiftNFTCard: failed to unwrap gift card");
 
         // The gift is unwrapped now. Do not allow the same gift to redeem the amount again.
-        _giftMap[giftCard.tokenId].isUnwrapped = true;
+        _giftMap[gift.tokenId].isUnwrapped = true;
     }
 
     /// Unwraps the amount stored in the gift card and withdraws it in the owner's wallet.
     function unwrapGiftCard(uint256 tokenId) public {
         require(
-            ERC721Upgradeable.ownerOf(tokenId) == owner,
+            ERC721Upgradeable.ownerOf(tokenId) == msg.sender,
             "GiftNFTCard: caller is not owner"
         );
         GiftCard memory gift = _getGiftCard(tokenId);
-        _unwrapGiftCardAndDisburse(gift, owner);
+        _unwrapGiftCardAndDisburse(gift, msg.sender);
     }
 
     /// Unwraps the gift card for the user using the admin account so that the unwrapper does not have to
     /// directly pay gas prices.
-    function unwrapGiftCardByAdmin(uint256 tokenId, address owner, bytes memory signature) public onlyOwner {
+    function unwrapGiftCardByAdmin(
+        uint256 tokenId,
+        address owner,
+        bytes memory signature
+    ) public onlyOwner {
         /// Only the signed message of the owner will be able to unwrap the gift.
-        bytes32 msgHash = _prefixed(keccak256(abi.encodePacked(tokenId, owner)));
+        bytes32 msgHash = _prefixed(
+            keccak256(abi.encodePacked(tokenId, owner))
+        );
         address giftCardOwner = _recoverGiftCardOwner(msgHash, signature);
 
         require(
             ERC721Upgradeable.ownerOf(tokenId) == giftCardOwner,
             "GiftNFTCard: caller is not owner"
         );
-        require(owner == giftCardOwner,  "GiftNFTCard: caller is not owner");
+        require(owner == giftCardOwner, "GiftNFTCard: caller is not owner");
         GiftCard memory gift = _getGiftCard(tokenId);
 
         // Deduct the unwrap fees from the gift amount.
-        uint256 unwrapFees = _calculateGaslessTxFees(gift);
+        uint256 unwrapFees = _calculateGaslessTxFees(gift.amount);
         _totalFees += unwrapFees;
         gift.amount -= unwrapFees;
 
         _unwrapGiftCardAndDisburse(gift, giftCardOwner);
     }
 
-    /// Calculates the fees to do transactions for "free". The transaction costs are recovered from the gift
-    /// card value itself.
-    function _calculateGaslessTxFees() private pure returns (uint256) {
-        return 0;
+    /// Calculates the fees to do transactions for "free" without the user needing to have $METIS tokens in
+    /// their wallet. The transaction costs are recovered from the gift card value itself.
+    function _calculateGaslessTxFees(uint256 value)
+        private
+        pure
+        returns (uint256)
+    {
+        // TODO: Put an upper limit to the withdrawal charges.
+        // The fees are right now 1% of the total just for simplicities sake. There needs to be an upperlimit
+        // to the tx fees.
+        return value / 100;
     }
 
     /// Burns the gift card for good.
@@ -201,14 +234,21 @@ contract GiftNFTCard is
             "GiftNFTCard: caller is not owner"
         );
         GiftCard memory gift = _getGiftCard(tokenId);
-        require(gift.isUnwrapped == true, "GiftNFTCard: cannot burn a gift that is not unwrapped");
+        require(
+            gift.isUnwrapped == true,
+            "GiftNFTCard: cannot burn a gift that is not unwrapped"
+        );
 
         ERC721BurnableUpgradeable.burn(tokenId);
         _giftMap[tokenId].isBurnt = true;
     }
 
     /// Recover the owner of the gift card from the signature.
-    function _recoverGiftCardOwner(bytes32 msgHash, bytes memory signature) private pure returns (address) {
+    function _recoverGiftCardOwner(bytes32 msgHash, bytes memory signature)
+        private
+        pure
+        returns (address)
+    {
         require(signature.length == 65);
 
         bytes32 r;
@@ -228,7 +268,10 @@ contract GiftNFTCard is
 
     // Builds a prefixed hash to mimic the behavior of eth_sign.
     function _prefixed(bytes32 hash) private pure returns (bytes32) {
-        return keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", hash));
+        return
+            keccak256(
+                abi.encodePacked("\x19Ethereum Signed Message:\n32", hash)
+            );
     }
 
     // The following functions are overrides required by Solidity.
