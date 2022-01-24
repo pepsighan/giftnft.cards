@@ -243,6 +243,16 @@ contract GiftNFTCard is
         _giftMap[tokenId].isBurnt = true;
     }
 
+    /// Gets the total fees earned till now.
+    function getTotalFees() public view onlyOwner returns (uint256) {
+        return _totalFees;
+    }
+
+    /// Gets the total fees earned that is withdrawn till now.
+    function getTotalFeesWithdrawn() public view onlyOwner returns (uint256) {
+        return _totalFeesWithdrawn;
+    }
+
     /// Recover the owner of the gift card from the signature.
     function _recoverGiftCardOwner(bytes32 msgHash, bytes memory signature)
         private
