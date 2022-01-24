@@ -51,6 +51,12 @@ contract GiftNFTCard is
     /// List of gifts sent by an address.
     mapping(address => uint256[]) private _sentGifts;
 
+    /// Total fees accumulated during the course of minting and unwrapping of gifts.
+    uint256 private _totalFees;
+
+    /// Total amount of fees that are withdrawn to the admin account as earnings.
+    uint256 private _totalFeesWithdrawn;
+
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() initializer {}
 
@@ -73,7 +79,13 @@ contract GiftNFTCard is
         string memory message,
         string memory signedBy
     ) public payable {
+        // TODO: Require a minimum value of gift card amount.
         require(msg.value > 0, "GiftNFTCard: gift card needs to have some amount");
+
+        // Take a cut from the minting.
+        uint256 mintFees = _calculateMintFees(msg.value);
+        _totalFees += mintFees;
+        uint256 giftValue = msg.value - mintFees;
 
         uint256 tokenId = _tokenIdCounter.current();
         _tokenIdCounter.increment();
@@ -83,7 +95,7 @@ contract GiftNFTCard is
         // Store the metadata of the NFT in the map.
         _giftMap[tokenId] = GiftCard({
             tokenId: tokenId,
-            amount: msg.value,
+            amount: giftValue,
             imageDataUrl: imageDataUrl,
             message: message,
             signedBy: signedBy,
@@ -94,6 +106,12 @@ contract GiftNFTCard is
             isInitialized: true
         });
         _sentGifts[msg.sender].push(tokenId);
+    }
+
+    /// Calculates the minting fees.
+    function _calculateMintFees() private pure returns (uint256) {
+        // TODO: Take a cut of the gift card amount.
+        return 0;
     }
 
     /// Gets the gift card by the token id.
