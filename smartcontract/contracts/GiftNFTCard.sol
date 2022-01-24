@@ -150,9 +150,9 @@ contract GiftNFTCard is
 
     /// Unwraps the gift card for the user using the admin account so that the unwrapper does not have to
     /// directly pay gas prices.
-    function unwrapGiftCardByAdmin(uint256 tokenId, bytes signature) public onlyOwner {
+    function unwrapGiftCardByAdmin(uint256 tokenId, bytes memory signature) public onlyOwner {
         /// Only the signed message of the owner will be able to unwrap the gift.
-        bytes32 msgHash = prefixed(keccak256(tokenId));
+        bytes32 msgHash = _prefixed(keccak256(abi.encodePacked(tokenId)));
         address giftCardOwner = _recoverGiftCardOwner(msgHash, signature);
         _unwrapGiftCard(tokenId, giftCardOwner);
     }
@@ -171,7 +171,7 @@ contract GiftNFTCard is
     }
 
     /// Recover the owner of the gift card from the signature.
-    function _recoverGiftCardOwner(bytes32 msgHash, bytes signature) private returns (address) {
+    function _recoverGiftCardOwner(bytes32 msgHash, bytes memory signature) private pure returns (address) {
         require(signature.length == 65);
 
         bytes32 r;
@@ -179,14 +179,19 @@ contract GiftNFTCard is
         uint8 v;
         assembly {
             // First 32 bytes, after the length prefix.
-            r := mload(add(sig, 32))
+            r := mload(add(signature, 32))
             // Second 32 bytes.
-            s := mload(add(sig, 64))
+            s := mload(add(signature, 64))
             // Final byte (first byte of the next 32 bytes).
-            v := byte(0, mload(add(sig, 96)))
+            v := byte(0, mload(add(signature, 96)))
         }
 
         return ecrecover(msgHash, v, r, s);
+    }
+
+    // Builds a prefixed hash to mimic the behavior of eth_sign.
+    function _prefixed(bytes32 hash) private pure returns (bytes32) {
+        return keccak256(abi.encodePacked("\x19Ethereum Signed Message:\n32", hash));
     }
 
     // The following functions are overrides required by Solidity.
