@@ -143,13 +143,8 @@ contract GiftNFTCard is
         return _getGiftCard(tokenId);
     }
 
-    /// Unwraps the gift card of the owner.
-    function _unwrapGiftCard(uint256 tokenId, address owner) private {
-        require(
-            ERC721Upgradeable.ownerOf(tokenId) == owner,
-            "GiftNFTCard: caller is not owner"
-        );
-        GiftCard memory gift = _getGiftCard(tokenId);
+    /// Unwraps the gift and sends the amount stored in the gift card to the owner.
+    function _unwrapGiftCardAndDisburse(GiftCard memory giftCard, address owner) private {
         require(gift.isUnwrapped == false, "GiftNFTCard: cannot unwrap already unwrapped gift card");
 
         address payable sender = payable(owner);
@@ -158,12 +153,17 @@ contract GiftNFTCard is
         require(sent, "GiftNFTCard: failed to unwrap gift card");
 
         // The gift is unwrapped now. Do not allow the same gift to redeem the amount again.
-        _giftMap[tokenId].isUnwrapped = true;
+        _giftMap[giftCard.tokenId].isUnwrapped = true;
     }
 
     /// Unwraps the amount stored in the gift card and withdraws it in the owner's wallet.
     function unwrapGiftCard(uint256 tokenId) public {
-        _unwrapGiftCard(tokenId, msg.sender);
+        require(
+            ERC721Upgradeable.ownerOf(tokenId) == owner,
+            "GiftNFTCard: caller is not owner"
+        );
+        GiftCard memory gift = _getGiftCard(tokenId);
+        _unwrapGiftCardAndDisburse(gift, owner);
     }
 
     /// Unwraps the gift card for the user using the admin account so that the unwrapper does not have to
@@ -172,7 +172,25 @@ contract GiftNFTCard is
         /// Only the signed message of the owner will be able to unwrap the gift.
         bytes32 msgHash = _prefixed(keccak256(abi.encodePacked(tokenId)));
         address giftCardOwner = _recoverGiftCardOwner(msgHash, signature);
-        _unwrapGiftCard(tokenId, giftCardOwner);
+
+        require(
+            ERC721Upgradeable.ownerOf(tokenId) == giftCardOwner,
+            "GiftNFTCard: caller is not owner"
+        );
+        GiftCard memory gift = _getGiftCard(tokenId);
+
+        // Deduct the unwrap fees from the gift amount.
+        uint256 unwrapFees = _calculateGaslessTxFees(gift);
+        _totalFees += unwrapFees;
+        gift.amount -= unwrapFees;
+
+        _unwrapGiftCardAndDisburse(gift, giftCardOwner);
+    }
+
+    /// Calculates the fees to do transactions for "free". The transaction costs are recovered from the gift
+    /// card value itself.
+    function _calculateGaslessTxFees() private pure returns (uint256) {
+        return 0;
     }
 
     /// Burns the gift card for good.
