@@ -343,6 +343,7 @@ const config = {
   CHAIN_ID: parseInt(process.env.NEXT_PUBLIC_CHAIN_ID!),
   CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS!,
   CONTRACT_ABI,
+  HTTP_RPC_ENDPOINT: process.env.HTTP_RPC_ENDPOINT,
 };
 
 if (!config.CONTRACT_ADDRESS || !config.CHAIN_ID) {

@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { ethers } from "ethers";
+import config from "utils/config";
 
 /**
  * Get address of the wallet from signature.
@@ -48,5 +49,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
     });
   }
 
+  const provider = new ethers.providers.JsonRpcProvider({
+    url: config.HTTP_RPC_ENDPOINT!,
+  });
   // TODO: Send the request using admin's wallet.
 }
