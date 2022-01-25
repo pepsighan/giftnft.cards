@@ -46,31 +46,42 @@ export default async function handler(
     });
   }
 
-  const isValidRequest = getAddressFromSignature(tokenId, owner, signature);
-  if (!isValidRequest) {
-    return res.status(400).send({
-      message: "Bad request",
+  try {
+    const isValidRequest = getAddressFromSignature(tokenId, owner, signature);
+    if (!isValidRequest) {
+      return res.status(400).send({
+        message: "Bad request",
+      });
+    }
+
+    const provider = new ethers.providers.JsonRpcProvider({
+      url: config.HTTP_RPC_ENDPOINT!,
+    });
+
+    const signer = provider.getSigner();
+    const contract = new ethers.Contract(
+      config.CONTRACT_ADDRESS,
+      config.CONTRACT_ABI,
+      signer
+    );
+
+    const giftCardTuple = await contract.getGiftCardByAdmin(tokenId);
+    const giftCard = convertGiftCardTupleToObject(giftCardTuple);
+    if (giftCard.isUnwrapped) {
+      return res.status(400).send({
+        message: "Gift already unwrapped.",
+      });
+    }
+
+    await contract.unwrapGiftCardByAdmin(tokenId, owner, signature);
+    // TODO: Because transactions are not resolved using the async-await, list to events.
+    res.status(200).send({
+      message: "Your gift has been unwrapped.",
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({
+      message: "Internal server error",
     });
   }
-
-  const provider = new ethers.providers.JsonRpcProvider({
-    url: config.HTTP_RPC_ENDPOINT!,
-  });
-
-  const signer = provider.getSigner();
-  const contract = new ethers.Contract(
-    config.CONTRACT_ADDRESS,
-    config.CONTRACT_ABI,
-    signer
-  );
-
-  const giftCardTuple = await contract.getGiftCardByAdmin(tokenId);
-  const giftCard = convertGiftCardTupleToObject(giftCardTuple);
-  if (giftCard.isUnwrapped) {
-    return res.status(400).send({
-      message: "Gift already unwrapped.",
-    });
-  }
-
-  // TODO: Send the request using admin's wallet.
 }
