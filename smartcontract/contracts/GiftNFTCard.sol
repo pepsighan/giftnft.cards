@@ -128,6 +128,16 @@ contract GiftNFTCard is
         return card;
     }
 
+    /// Gets the gift card by the token id for an admin.
+    function getGiftCardByAdmin(uint256 tokenId)
+        public
+        view
+        onlyOwner
+        returns (GiftCard memory)
+    {
+        return _getGiftCard(tokenId);
+    }
+
     /// Get gift card of the owner using index.
     function getGiftCardByIndex(uint256 index)
         public
