@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { ethers } from "ethers";
 import config from "utils/config";
+import { convertGiftCardTupleToObject } from "utils/conversion";
 
 /**
  * Get address of the wallet from signature.
@@ -28,7 +29,10 @@ function getAddressFromSignature(
  * Unwrap the gift card using the admin account itself so that the user does not have to pay for
  * the transaction.
  */
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse
+) {
   if (req.method !== "POST") {
     return res.status(404).send({
       message: "Not found",
@@ -52,5 +56,21 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   const provider = new ethers.providers.JsonRpcProvider({
     url: config.HTTP_RPC_ENDPOINT!,
   });
+
+  const signer = provider.getSigner();
+  const contract = new ethers.Contract(
+    config.CONTRACT_ADDRESS,
+    config.CONTRACT_ABI,
+    signer
+  );
+
+  const giftCardTuple = await contract.getGiftCardByAdmin(tokenId);
+  const giftCard = convertGiftCardTupleToObject(giftCardTuple);
+  if (giftCard.isUnwrapped) {
+    return res.status(400).send({
+      message: "Gift already unwrapped.",
+    });
+  }
+
   // TODO: Send the request using admin's wallet.
 }

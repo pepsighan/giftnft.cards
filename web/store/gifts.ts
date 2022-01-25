@@ -3,6 +3,7 @@ import { useAccount } from "store/account";
 import { useCallback, useEffect } from "react";
 import { getContract } from "utils/metamask";
 import { ethers } from "ethers";
+import { convertGiftCardTupleToObject } from "utils/conversion";
 
 export type GiftCard = {
   tokenId: ethers.BigNumber;
@@ -163,35 +164,4 @@ export function useUnwrapGift() {
     },
     [client]
   );
-}
-
-/**
- * Convert the GiftCard tuple from the smart contract into a js object.
- */
-function convertGiftCardTupleToObject(tuple: any[]): GiftCard {
-  const [
-    tokenId,
-    amount,
-    imageDataUrl,
-    message,
-    signedBy,
-    mintedBy,
-    isUnwrapped,
-    isBurnt,
-    timestamp,
-    isInitialized,
-  ] = tuple;
-
-  return {
-    tokenId,
-    amount,
-    imageDataUrl,
-    message,
-    signedBy,
-    mintedBy,
-    isUnwrapped,
-    isBurnt,
-    timestamp,
-    isInitialized,
-  };
 }
