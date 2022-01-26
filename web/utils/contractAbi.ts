@@ -61,25 +61,6 @@ const contractAbi = [
     anonymous: false,
     inputs: [
       {
-        indexed: false,
-        internalType: "uint256",
-        name: "gasLimit",
-        type: "uint256",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "gasPrice",
-        type: "uint256",
-      },
-    ],
-    name: "GasInfo",
-    type: "event",
-  },
-  {
-    anonymous: false,
-    inputs: [
-      {
         indexed: true,
         internalType: "address",
         name: "previousOwner",
@@ -799,6 +780,11 @@ const contractAbi = [
         internalType: "bytes",
         name: "signature",
         type: "bytes",
+      },
+      {
+        internalType: "uint256",
+        name: "txFee",
+        type: "uint256",
       },
     ],
     name: "unwrapGiftCardByAdmin",
