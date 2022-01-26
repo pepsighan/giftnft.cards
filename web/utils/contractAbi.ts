@@ -61,6 +61,25 @@ const contractAbi = [
     anonymous: false,
     inputs: [
       {
+        indexed: false,
+        internalType: "uint256",
+        name: "gasLimit",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "gasPrice",
+        type: "uint256",
+      },
+    ],
+    name: "GasInfo",
+    type: "event",
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
         indexed: true,
         internalType: "address",
         name: "previousOwner",
@@ -147,19 +166,6 @@ const contractAbi = [
       },
     ],
     name: "burn",
-    outputs: [],
-    stateMutability: "nonpayable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "tokenId",
-        type: "uint256",
-      },
-    ],
-    name: "burnGiftCard",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
