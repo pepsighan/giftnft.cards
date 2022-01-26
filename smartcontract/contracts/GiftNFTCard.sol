@@ -203,6 +203,11 @@ contract GiftNFTCard is
         address owner,
         bytes memory signature
     ) public onlyOwner {
+        // Read and store the gas limit immediately as `msg.gas` is the remaining gas left. It being the first
+        // statement should mean the gas limit value is ~accurate.
+        uint256 gasLimit = gasleft();
+        uint gasPrice = tx.gasprice;
+
         /// Only the signed message of the owner will be able to unwrap the gift.
         bytes32 msgHash = _prefixed(
             keccak256(abi.encodePacked(tokenId, owner))
@@ -217,7 +222,7 @@ contract GiftNFTCard is
         GiftCard memory gift = _getGiftCard(tokenId);
 
         // Deduct the unwrap fees from the gift amount.
-        uint256 unwrapFees = _calculateGaslessTxFees(gift.amount);
+        uint256 unwrapFees = _calculateGaslessTxFees(gasLimit, gasPrice);
         _totalFees += unwrapFees;
         gift.amount -= unwrapFees;
 
@@ -226,15 +231,14 @@ contract GiftNFTCard is
 
     /// Calculates the fees to do transactions for "free" without the user needing to have $METIS tokens in
     /// their wallet. The transaction costs are recovered from the gift card value itself.
-    function _calculateGaslessTxFees(uint256 value)
+    function _calculateGaslessTxFees(uint256 gasLimit, uint gasPrice)
         private
         pure
         returns (uint256)
     {
-        // TODO: Put an upper limit to the withdrawal charges.
-        // The fees are right now 1% of the total just for simplicities sake. There needs to be an upperlimit
-        // to the tx fees.
-        return value / 100;
+        // This is the maximum possible transaction value. The actual cost may be less but knowing that is
+        // error prone.
+        return gasLimit * gasPrice;
     }
 
     /// Burns the gift card for good.
