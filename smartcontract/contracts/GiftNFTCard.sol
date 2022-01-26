@@ -251,22 +251,6 @@ contract GiftNFTCard is
         return gasLimit * gasPrice * 2;
     }
 
-    /// Burns the gift card for good.
-    function burnGiftCard(uint256 tokenId) public {
-        require(
-            ERC721Upgradeable.ownerOf(tokenId) == msg.sender,
-            "GiftNFTCard: caller is not owner"
-        );
-        GiftCard memory gift = _getGiftCard(tokenId);
-        require(
-            gift.isUnwrapped == true,
-            "GiftNFTCard: cannot burn a gift that is not unwrapped"
-        );
-
-        ERC721BurnableUpgradeable.burn(tokenId);
-        _giftMap[tokenId].isBurnt = true;
-    }
-
     /// Gets the total fees earned till now.
     function getTotalFees() public view onlyOwner returns (uint256) {
         return _totalFees;
