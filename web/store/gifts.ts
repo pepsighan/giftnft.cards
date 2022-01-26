@@ -4,7 +4,7 @@ import { useCallback, useEffect } from "react";
 import { getContract, getEthers } from "utils/metamask";
 import { ethers } from "ethers";
 import { convertGiftCardTupleToObject } from "utils/conversion";
-import ky from "ky";
+import axios from "axios";
 
 export type GiftCard = {
   tokenId: ethers.BigNumber;
@@ -167,12 +167,10 @@ export function useUnwrapGift() {
         ethers.utils.arrayify(msgHash)
       );
 
-      await ky.post("/api/unwrap", {
-        json: {
-          tokenId,
-          owner,
-          signature,
-        },
+      await axios.post("/api/unwrap", {
+        tokenId,
+        owner,
+        signature,
       });
       // Refetch the gifts.
       await Promise.all([
