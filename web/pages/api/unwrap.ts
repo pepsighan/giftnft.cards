@@ -77,7 +77,8 @@ export default async function handler(
       signature
     );
 
-    await contract.unwrapGiftCardByAdmin(tokenId, owner, signature, {
+    const txFee = gasLimit.mul(gasPrice);
+    await contract.unwrapGiftCardByAdmin(tokenId, owner, signature, txFee, {
       gasPrice,
       gasLimit,
     });
