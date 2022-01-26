@@ -5,6 +5,7 @@ const config = {
   CONTRACT_ADDRESS: process.env.NEXT_PUBLIC_CONTRACT_ADDRESS!,
   CONTRACT_ABI: contractAbi,
   HTTP_RPC_ENDPOINT: process.env.HTTP_RPC_ENDPOINT,
+  ADMIN_PRIVATE_KEY: process.env.ADMIN_PRIVATE_KEY,
 };
 
 if (!config.CONTRACT_ADDRESS || !config.CHAIN_ID) {

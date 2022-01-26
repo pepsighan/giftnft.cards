@@ -54,11 +54,11 @@ export default async function handler(
       });
     }
 
-    const provider = new ethers.providers.JsonRpcProvider({
-      url: config.HTTP_RPC_ENDPOINT!,
-    });
+    const provider = new ethers.providers.JsonRpcProvider(
+      config.HTTP_RPC_ENDPOINT
+    );
 
-    const signer = provider.getSigner();
+    const signer = new ethers.Wallet(config.ADMIN_PRIVATE_KEY!, provider);
     const contract = new ethers.Contract(
       config.CONTRACT_ADDRESS,
       config.CONTRACT_ABI,
