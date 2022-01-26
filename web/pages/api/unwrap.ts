@@ -42,7 +42,7 @@ export default async function handler(
   const { tokenId, owner, signature } = req.body ?? {};
   if (!tokenId || !owner || !signature) {
     return res.status(400).send({
-      message: "Bad request",
+      message: "Requires `tokenId`, `owner` and `signature` to be present",
     });
   }
 
@@ -50,7 +50,7 @@ export default async function handler(
     const isValidRequest = getAddressFromSignature(tokenId, owner, signature);
     if (!isValidRequest) {
       return res.status(400).send({
-        message: "Bad request",
+        message: "Invalid signature",
       });
     }
 
