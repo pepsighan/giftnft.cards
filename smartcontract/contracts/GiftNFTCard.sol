@@ -196,12 +196,14 @@ contract GiftNFTCard is
         _unwrapGiftCardAndDisburse(gift, msg.sender);
     }
 
-    /// Unwraps the gift card for the user using the admin account so that the unwrapper does not have to
-    /// directly pay gas prices.
+    /// Unwraps the gift card for the user using the admin account so that the user does not have to
+    /// directly pay gas prices. The txFee are sent by the admin itself and as such are trustable and accurate.
     function unwrapGiftCardByAdmin(
         uint256 tokenId,
         address owner,
-        bytes memory signature
+        bytes memory signature,
+        // This fee is calculated by the admin using `gasLimit*gasPrice`.
+        uint256 txFee
     ) public onlyOwner {
         /// Only the signed message of the owner will be able to unwrap the gift.
         bytes32 msgHash = _prefixed(
@@ -217,40 +219,11 @@ contract GiftNFTCard is
         GiftCard memory gift = _getGiftCard(tokenId);
 
         // Deduct the unwrap fees from the gift amount.
-        uint256 unwrapFees = _calculateGaslessTxFees(gift.amount);
-        _totalFees += unwrapFees;
-        gift.amount -= unwrapFees;
+        // TODO: What to do when the fees are more than the wrapped value?
+        _totalFees += txFee;
+        gift.amount -= txFee;
 
         _unwrapGiftCardAndDisburse(gift, giftCardOwner);
-    }
-
-    /// Calculates the fees to do transactions for "free" without the user needing to have $METIS tokens in
-    /// their wallet. The transaction costs are recovered from the gift card value itself.
-    function _calculateGaslessTxFees(uint256 value)
-        private
-        pure
-        returns (uint256)
-    {
-        // TODO: Put an upper limit to the withdrawal charges.
-        // The fees are right now 1% of the total just for simplicities sake. There needs to be an upperlimit
-        // to the tx fees.
-        return value / 100;
-    }
-
-    /// Burns the gift card for good.
-    function burnGiftCard(uint256 tokenId) public {
-        require(
-            ERC721Upgradeable.ownerOf(tokenId) == msg.sender,
-            "GiftNFTCard: caller is not owner"
-        );
-        GiftCard memory gift = _getGiftCard(tokenId);
-        require(
-            gift.isUnwrapped == true,
-            "GiftNFTCard: cannot burn a gift that is not unwrapped"
-        );
-
-        ERC721BurnableUpgradeable.burn(tokenId);
-        _giftMap[tokenId].isBurnt = true;
     }
 
     /// Gets the total fees earned till now.

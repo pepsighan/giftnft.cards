@@ -7,21 +7,18 @@ import { convertGiftCardTupleToObject } from "utils/conversion";
  * Get address of the wallet from signature.
  */
 function getAddressFromSignature(
-  tokenId: number,
+  tokenId: string,
   owner: string,
   signature: string
 ): boolean {
-  // The algorithm to extract signature is the same as in solidity.
-  const sig = ethers.utils.splitSignature(signature);
   const msgHash = ethers.utils.solidityKeccak256(
     ["uint256", "address"],
     [tokenId, owner]
   );
-  const prefixedHash = ethers.utils.solidityKeccak256(
-    ["string", "string"],
-    ["\x19Ethereum Signed Message:\n32", msgHash]
+  const address = ethers.utils.verifyMessage(
+    ethers.utils.arrayify(msgHash),
+    signature
   );
-  const address = ethers.utils.recoverAddress(prefixedHash, sig);
   return address === owner;
 }
 
@@ -42,7 +39,7 @@ export default async function handler(
   const { tokenId, owner, signature } = req.body ?? {};
   if (!tokenId || !owner || !signature) {
     return res.status(400).send({
-      message: "Bad request",
+      message: "Requires `tokenId`, `owner` and `signature` to be present",
     });
   }
 
@@ -50,15 +47,15 @@ export default async function handler(
     const isValidRequest = getAddressFromSignature(tokenId, owner, signature);
     if (!isValidRequest) {
       return res.status(400).send({
-        message: "Bad request",
+        message: "Invalid signature",
       });
     }
 
-    const provider = new ethers.providers.JsonRpcProvider({
-      url: config.HTTP_RPC_ENDPOINT!,
-    });
+    const provider = new ethers.providers.JsonRpcProvider(
+      config.HTTP_RPC_ENDPOINT
+    );
 
-    const signer = provider.getSigner();
+    const signer = new ethers.Wallet(config.ADMIN_PRIVATE_KEY!, provider);
     const contract = new ethers.Contract(
       config.CONTRACT_ADDRESS,
       config.CONTRACT_ABI,
@@ -73,7 +70,20 @@ export default async function handler(
       });
     }
 
-    await contract.unwrapGiftCardByAdmin(tokenId, owner, signature);
+    const gasPrice = await signer.getGasPrice();
+    const gasLimit = await contract.estimateGas.unwrapGiftCardByAdmin(
+      tokenId,
+      owner,
+      signature,
+      // A dummy tx fee just to estimate.
+      ethers.BigNumber.from(1e12)
+    );
+
+    const txFee = gasLimit.mul(gasPrice);
+    await contract.unwrapGiftCardByAdmin(tokenId, owner, signature, txFee, {
+      gasPrice,
+      gasLimit,
+    });
     // TODO: Because transactions are not resolved using the async-await, list to events.
     res.status(200).send({
       message: "Your gift has been unwrapped.",

@@ -1,9 +1,10 @@
 import { useQuery, useQueryClient } from "react-query";
 import { useAccount } from "store/account";
 import { useCallback, useEffect } from "react";
-import { getContract } from "utils/metamask";
+import { getContract, getEthers } from "utils/metamask";
 import { ethers } from "ethers";
 import { convertGiftCardTupleToObject } from "utils/conversion";
+import ky from "ky";
 
 export type GiftCard = {
   tokenId: ethers.BigNumber;
@@ -150,12 +151,29 @@ export function useUnwrapGift() {
 
   return useCallback(
     async (tokenId: string) => {
-      const contract = await getContract();
-      if (!contract) {
+      const eths = await getEthers();
+      if (!eths) {
         return;
       }
-      await contract.unwrapGiftCard(tokenId);
 
+      // This will let the backend know if the unwrap request is from the owner itself.
+      const signer = eths.getSigner();
+      const owner = await signer.getAddress();
+      const msgHash = ethers.utils.solidityKeccak256(
+        ["uint256", "address"],
+        [tokenId, owner]
+      );
+      const signature = await signer.signMessage(
+        ethers.utils.arrayify(msgHash)
+      );
+
+      await ky.post("/api/unwrap", {
+        json: {
+          tokenId,
+          owner,
+          signature,
+        },
+      });
       // Refetch the gifts.
       await Promise.all([
         client.invalidateQueries("use-my-gifts"),
