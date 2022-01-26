@@ -231,6 +231,7 @@ contract GiftNFTCard is
 
         // Deduct the unwrap fees from the gift amount.
         uint256 unwrapFees = _calculateGaslessTxFees(gasLimit, gasPrice);
+        // TODO: What to do when the fees are more than the wrapped value?
         _totalFees += unwrapFees;
         gift.amount -= unwrapFees;
 
