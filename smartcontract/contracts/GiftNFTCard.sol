@@ -57,12 +57,6 @@ contract GiftNFTCard is
     /// Total amount of fees that are withdrawn to the admin account as earnings.
     uint256 private _totalFeesWithdrawn;
 
-    /// The GasInfo with a transaction during unwrap by admin.
-    event GasInfo(
-        uint256 gasLimit,
-        uint256 gasPrice
-    );
-
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() initializer {}
 
@@ -202,20 +196,15 @@ contract GiftNFTCard is
         _unwrapGiftCardAndDisburse(gift, msg.sender);
     }
 
-    /// Unwraps the gift card for the user using the admin account so that the unwrapper does not have to
-    /// directly pay gas prices.
+    /// Unwraps the gift card for the user using the admin account so that the user does not have to
+    /// directly pay gas prices. The txFee are sent by the admin itself and as such are trustable and accurate.
     function unwrapGiftCardByAdmin(
         uint256 tokenId,
         address owner,
-        bytes memory signature
+        bytes memory signature,
+        // This fee is calculated by the admin using `gasLimit*gasPrice`.
+        uint256 txFee
     ) public onlyOwner {
-        // Read and store the gas limit immediately as `msg.gas` is the remaining gas left. It being the first
-        // statement should mean the gas limit value is near to the actual limit.
-        uint256 gasLimit = gasleft();
-        uint256 gasPrice = tx.gasprice;
-
-        emit GasInfo(gasLimit, gasPrice);
-
         /// Only the signed message of the owner will be able to unwrap the gift.
         bytes32 msgHash = _prefixed(
             keccak256(abi.encodePacked(tokenId, owner))
@@ -230,26 +219,11 @@ contract GiftNFTCard is
         GiftCard memory gift = _getGiftCard(tokenId);
 
         // Deduct the unwrap fees from the gift amount.
-        uint256 unwrapFees = _calculateGaslessTxFees(gasLimit, gasPrice);
         // TODO: What to do when the fees are more than the wrapped value?
-        _totalFees += unwrapFees;
-        gift.amount -= unwrapFees;
+        _totalFees += txFee;
+        gift.amount -= txFee;
 
         _unwrapGiftCardAndDisburse(gift, giftCardOwner);
-    }
-
-    /// Calculates the fees to do transactions for "free" without the user needing to have $METIS tokens in
-    /// their wallet. The transaction costs are recovered from the gift card value itself.
-    function _calculateGaslessTxFees(uint256 gasLimit, uint256 gasPrice)
-        private
-        pure
-        returns (uint256)
-    {
-        // This is the maximum possible transaction value. The actual cost may be less but there is no correct way
-        // to know that afaik.
-        // Multiplying the fees by 2 because the gasLimit value here is not the real value but rather the value that
-        // the smart contract read (which is always < real one).
-        return gasLimit * gasPrice * 2;
     }
 
     /// Gets the total fees earned till now.
