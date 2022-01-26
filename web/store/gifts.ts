@@ -151,19 +151,21 @@ export function useUnwrapGift() {
 
   return useCallback(
     async (tokenId: string) => {
-      const owner = useAccount.getState().accountId;
-      if (!owner) {
-        return;
-      }
-
-      const ethers = await getEthers();
-      if (!ethers) {
+      const eths = await getEthers();
+      if (!eths) {
         return;
       }
 
       // This will let the backend know if the unwrap request is from the owner itself.
-      const signer = ethers.getSigner();
-      const signature = await signer.signMessage(`${tokenId}${owner}`);
+      const signer = eths.getSigner();
+      const owner = await signer.getAddress();
+      const msgHash = ethers.utils.solidityKeccak256(
+        ["uint256", "address"],
+        [tokenId, owner]
+      );
+      const signature = await signer.signMessage(
+        ethers.utils.arrayify(msgHash)
+      );
 
       await ky.post("/api/unwrap", {
         json: {

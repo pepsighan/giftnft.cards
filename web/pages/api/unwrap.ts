@@ -7,21 +7,18 @@ import { convertGiftCardTupleToObject } from "utils/conversion";
  * Get address of the wallet from signature.
  */
 function getAddressFromSignature(
-  tokenId: number,
+  tokenId: string,
   owner: string,
   signature: string
 ): boolean {
-  // The algorithm to extract signature is the same as in solidity.
-  const sig = ethers.utils.splitSignature(signature);
   const msgHash = ethers.utils.solidityKeccak256(
     ["uint256", "address"],
     [tokenId, owner]
   );
-  const prefixedHash = ethers.utils.solidityKeccak256(
-    ["string", "string"],
-    ["\x19Ethereum Signed Message:\n32", msgHash]
+  const address = ethers.utils.verifyMessage(
+    ethers.utils.arrayify(msgHash),
+    signature
   );
-  const address = ethers.utils.recoverAddress(prefixedHash, sig);
   return address === owner;
 }
 
