@@ -57,6 +57,12 @@ contract GiftNFTCard is
     /// Total amount of fees that are withdrawn to the admin account as earnings.
     uint256 private _totalFeesWithdrawn;
 
+    /// The GasInfo with a transaction during unwrap by admin.
+    event GasInfo(
+        uint256 gasLimit,
+        uint256 gasPrice
+    );
+
     /// @custom:oz-upgrades-unsafe-allow constructor
     constructor() initializer {}
 
@@ -206,7 +212,9 @@ contract GiftNFTCard is
         // Read and store the gas limit immediately as `msg.gas` is the remaining gas left. It being the first
         // statement should mean the gas limit value is ~accurate.
         uint256 gasLimit = gasleft();
-        uint gasPrice = tx.gasprice;
+        uint256 gasPrice = tx.gasprice;
+
+        emit GasInfo(gasLimit, gasPrice);
 
         /// Only the signed message of the owner will be able to unwrap the gift.
         bytes32 msgHash = _prefixed(
@@ -231,7 +239,7 @@ contract GiftNFTCard is
 
     /// Calculates the fees to do transactions for "free" without the user needing to have $METIS tokens in
     /// their wallet. The transaction costs are recovered from the gift card value itself.
-    function _calculateGaslessTxFees(uint256 gasLimit, uint gasPrice)
+    function _calculateGaslessTxFees(uint256 gasLimit, uint256 gasPrice)
         private
         pure
         returns (uint256)
