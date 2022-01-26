@@ -210,7 +210,7 @@ contract GiftNFTCard is
         bytes memory signature
     ) public onlyOwner {
         // Read and store the gas limit immediately as `msg.gas` is the remaining gas left. It being the first
-        // statement should mean the gas limit value is ~accurate.
+        // statement should mean the gas limit value is near to the actual limit.
         uint256 gasLimit = gasleft();
         uint256 gasPrice = tx.gasprice;
 
@@ -244,9 +244,11 @@ contract GiftNFTCard is
         pure
         returns (uint256)
     {
-        // This is the maximum possible transaction value. The actual cost may be less but knowing that is
-        // error prone.
-        return gasLimit * gasPrice;
+        // This is the maximum possible transaction value. The actual cost may be less but there is no correct way
+        // to know that afaik.
+        // Multiplying the fees by 2 because the gasLimit value here is not the real value but rather the value that
+        // the smart contract read (which is always < real one).
+        return gasLimit * gasPrice * 2;
     }
 
     /// Burns the gift card for good.
