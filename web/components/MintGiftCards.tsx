@@ -1,7 +1,5 @@
 import { Grid, Stack, TextField, Typography } from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { NextSeo } from "next-seo";
-import Navigation from "components/Navigation";
 import { useRef } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { materialRegister } from "utils/materialForm";
@@ -12,7 +10,6 @@ import { useSnackbar } from "notistack";
 import html2canvas from "html2canvas";
 import SentGifts from "components/SentGifts";
 import RecipientTextField from "components/RecipientTextField";
-import GiftAmountField from "components/GiftAmountField";
 import { useAsyncFn } from "react-use";
 import GiftCard from "components/GiftCard";
 import { calculateWei } from "utils/metis";
@@ -22,20 +19,14 @@ const schema = z
     message: z.string().min(1, "Required"),
     name: z.string().min(1, "Required"),
     amount: z.string().regex(/^([0-9]*[.])?[0-9]{0,9}$/, "Not a valid amount"),
-    amountTenPowerMultiplier: z.number(),
     recipient: z
       .string()
       .regex(/^0x[a-fA-F0-9]{40}$/, "Invalid wallet address"),
   })
-  .refine(
-    (data) =>
-      calculateWei(data.amount, data.amountTenPowerMultiplier as 0 | 9 | 18) >
-      0,
-    {
-      message: "A gift card needs to have some coins",
-      path: ["amount"],
-    }
-  );
+  .refine((data) => calculateWei(data.amount) > 0, {
+    message: "A gift card needs to have amount",
+    path: ["amount"],
+  });
 
 type SchemaType = z.infer<typeof schema>;
 
@@ -47,7 +38,6 @@ export default function MintGiftCard() {
       message: "",
       name: "",
       amount: "1",
-      amountTenPowerMultiplier: 0,
       recipient: "",
     },
     resolver: zodResolver(schema),
@@ -74,10 +64,7 @@ export default function MintGiftCard() {
         signedBy: state.name,
         message: state.message,
         // Convert the amount to Wei.
-        amount: calculateWei(
-          state.amount,
-          state.amountTenPowerMultiplier as 0 | 9 | 18
-        ).toString(),
+        amount: calculateWei(state.amount).toString(),
         recipient: state.recipient,
         imageDataUrl,
       });
@@ -112,7 +99,13 @@ export default function MintGiftCard() {
                 onSubmit={handleSubmit(onMintGiftCard)}
               >
                 <RecipientTextField />
-                <GiftAmountField />
+                <TextField
+                  {...materialRegister(register, "amount")}
+                  label="Amount"
+                  fullWidth
+                  helperText={errors.amount?.message}
+                  error={!!errors.amount}
+                />
                 <TextField
                   {...materialRegister(register, "message")}
                   label="Message"
