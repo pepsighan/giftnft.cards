@@ -62,16 +62,16 @@ export default async function handler(
       signer
     );
 
-    const giftCardTuple = await contract.getGiftCardByAdmin(tokenId);
+    const giftCardTuple = await contract.getGiftCardOfOwnerByAdmin(
+      tokenId,
+      owner
+    );
     const giftCard = convertGiftCardTupleToObject(giftCardTuple);
     if (giftCard.isUnwrapped) {
       return res.status(400).send({
         message: "Gift already unwrapped.",
       });
     }
-
-    // TODO: Verify if the tokenId is owned by the owner. So that some random user does not try to deplete the
-    // admin wallet by sending in failing transactions repeatedly.
 
     const gasPrice = await signer.getGasPrice();
     const gasLimit = await contract.estimateGas.unwrapGiftCardByAdmin(
@@ -110,10 +110,10 @@ export default async function handler(
     res.status(200).send({
       message: "Your gift has been unwrapped.",
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     res.status(500).send({
-      message: "Internal server error",
+      message: error.message || "Internal Server Error",
     });
   }
 }
