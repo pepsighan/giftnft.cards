@@ -23,7 +23,7 @@ const schema = z
       .string()
       .regex(/^0x[a-fA-F0-9]{40}$/, "Invalid wallet address"),
   })
-  .refine((data) => calculateWei(data.amount) > 0, {
+  .refine((data) => calculateWei(data.amount).gt(0), {
     message: "A gift card needs to have amount",
     path: ["amount"],
   });

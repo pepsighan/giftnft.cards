@@ -1,8 +1,6 @@
-import { Box, Button, Stack } from "@mui/material";
-import { useAccount } from "store/account";
+import { Box, Button } from "@mui/material";
 import { useCallback } from "react";
 import MetamaskIcon from "components/MetamaskIcon";
-import Link from "next/link";
 import { useAsync } from "react-use";
 import { getMetamask } from "utils/metamask";
 
