@@ -9,6 +9,21 @@ export function calculateWei(amount: string): BigNumber {
     .integerValue();
 }
 
+const oneMetis = new BigNumber(10).pow(18);
+
+/**
+ * Calculates the mint fees in Wei for the amount.
+ * Fees are 5% capped at 1 $Metis.
+ */
+export function calculateMintFee(amount: BigNumber): BigNumber {
+  let fee = amount.multipliedBy(5).div(100);
+  if (fee.gt(oneMetis)) {
+    fee = oneMetis;
+  }
+
+  return fee;
+}
+
 /**
  * Format the amount (in Metis) to string.
  */
@@ -17,7 +32,7 @@ export function formatAmount(amount?: string): string {
     return "";
   }
 
-  return `${amount} METIS`;
+  return `${Number(amount)} METIS`;
 }
 
 /**

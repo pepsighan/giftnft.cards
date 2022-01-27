@@ -30,7 +30,10 @@ export default function UnwrapConfirmation({
     onClose();
   }, [giftCard.tokenId, unwrapGift]);
 
-  const { data } = useUnwrapFee(giftCard.tokenId.toString(), open);
+  const { data, isLoading: unwrapFeeLoading } = useUnwrapFee(
+    giftCard.tokenId.toString(),
+    open
+  );
   const txFee = data?.txFee;
   const isUnwrappable = data?.isUnwrappable;
   const withdrawAmount = txFee ? giftCard.amount.sub(txFee) : giftCard.amount;
@@ -63,7 +66,7 @@ export default function UnwrapConfirmation({
         <LoadingButton
           variant="contained"
           onClick={onUnwrap}
-          loading={loading}
+          loading={loading || unwrapFeeLoading}
           disabled={!isUnwrappable || withdrawAmount.lte(0)}
         >
           {isUnwrappable ? "Unwrap" : "Unwrap Not Available"}

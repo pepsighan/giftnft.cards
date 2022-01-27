@@ -79,10 +79,15 @@ contract GiftNFTCard is
         string memory message,
         string memory signedBy
     ) public payable {
-        // TODO: Require a minimum value of gift card amount.
+        // Minimum gift value that is added to the gift card is 0.1 Metis.
+        uint256 minGiftValue = 100_000_000_000_000_000;
+        uint256 minMintFee = _calculateMintFees(minGiftValue);
+        // This is the actual minimum value that needs to be sent by the user.
+        uint256 minValue = minGiftValue + minMintFee;
+
         require(
-            msg.value > 0,
-            "GiftNFTCard: gift card needs to have some amount"
+            msg.value > minValue,
+            "GiftNFTCard: gift card needs to have at least 0.1 Metis + mint fees"
         );
 
         // Take a cut from the minting.
@@ -111,10 +116,18 @@ contract GiftNFTCard is
     }
 
     /// Calculates the minting fees. This is what we earn for the service we provide.
+    /// The fee is 5% of the gift card value capped at 1 Metis.
     function _calculateMintFees(uint256 value) private pure returns (uint256) {
-        // TODO: Put an upper limit to the mint fees.
-        // Mint fees are 1% of the total value.
-        return value / 100;
+        // Fee is calculated by using 5% of gift value (x). And the amount (y) that is sent
+        // to the contract is x + 5% of x.
+        uint256 fee = value * 5 / 105;
+
+        uint256 oneMetis = 1_000_000_000_000_000_000;
+        if (fee > oneMetis) {
+            fee = oneMetis;
+        }
+
+        return fee;
     }
 
     /// Gets the gift card by the token id.
