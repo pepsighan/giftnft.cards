@@ -11,7 +11,7 @@ import html2canvas from "html2canvas";
 import SentGifts from "components/SentGifts";
 import RecipientTextField from "components/RecipientTextField";
 import { useAsyncFn } from "react-use";
-import GiftCard from "components/GiftCard";
+import GenericGiftCard from "components/cards/GenericGiftCard";
 import { calculateMintFee, calculateWei } from "utils/metis";
 import MintFee from "components/MintFee";
 
@@ -90,7 +90,7 @@ export default function MintGiftCard() {
         <Grid container spacing={8} sx={{ mt: 2 }}>
           <Grid item md={6}>
             <Stack alignItems="flex-end">
-              <GiftCard ref={giftCardRef} />
+              <GenericGiftCard ref={giftCardRef} />
             </Stack>
           </Grid>
 
