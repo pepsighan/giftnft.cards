@@ -4,13 +4,13 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
   Stack,
   Typography,
 } from "@mui/material";
 import { GiftCard, useUnwrapGift } from "store/gifts";
 import { useAsyncFn } from "react-use";
 import { LoadingButton } from "@mui/lab";
+import UnwrapAmount from "components/UnwrapAmount";
 
 type UnwrapConfirmationProps = {
   giftCard: GiftCard;
@@ -31,19 +31,22 @@ export default function UnwrapConfirmation({
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Unwrap your Gift Card</DialogTitle>
       <DialogContent>
-        <Typography>
-          Unwrapping will withdraw the amount stored in the gift card into your
-          account.
-        </Typography>
         <Stack alignItems="center">
           <Box
             component="img"
             src={giftCard.imageDataUrl}
             alt={giftCard.signedBy}
-            sx={{ width: 300, height: 400, mt: 4 }}
+            sx={{ width: 300 / 2, height: 400 / 2, mb: 2 }}
           />
+
+          <Typography variant="h6">Unwrap Gift Card</Typography>
+          <Typography textAlign="center" color="textSecondary">
+            Unwrapping will withdraw the amount stored in the gift card into
+            your account.
+          </Typography>
+
+          <UnwrapAmount giftCard={giftCard} />
         </Stack>
       </DialogContent>
       <DialogActions>
