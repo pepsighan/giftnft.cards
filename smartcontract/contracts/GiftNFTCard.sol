@@ -110,10 +110,16 @@ contract GiftNFTCard is
     }
 
     /// Calculates the minting fees. This is what we earn for the service we provide.
+    /// The fee is 5% of the value capped at 1 Metis.
     function _calculateMintFees(uint256 value) private pure returns (uint256) {
-        // TODO: Put an upper limit to the mint fees.
-        // Mint fees are 1% of the total value.
-        return value / 100;
+        uint256 fee = (value * 5) / 100;
+
+        uint256 oneMetis = 1_000_000_000_000_000_000;
+        if (fee > oneMetis) {
+            fee = oneMetis;
+        }
+
+        return fee;
     }
 
     /// Gets the gift card by the token id.
