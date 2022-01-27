@@ -59,6 +59,11 @@ export default function UnwrapConfirmation({
             giftCard={giftCard}
             txFee={txFee ? ethers.BigNumber.from(txFee) : null}
           />
+
+          <Typography variant="body2" sx={{ mt: 1 }}>
+            You will be prompted to sign a message to authorize the unwrap
+            request.
+          </Typography>
         </Stack>
       </DialogContent>
       <DialogActions>
