@@ -17,7 +17,7 @@ export function formatAmount(amount?: string): string {
     return "";
   }
 
-  return `${amount} METIS`;
+  return `${Number(amount)} METIS`;
 }
 
 /**

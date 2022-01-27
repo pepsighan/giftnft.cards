@@ -13,6 +13,7 @@ import RecipientTextField from "components/RecipientTextField";
 import { useAsyncFn } from "react-use";
 import GiftCard from "components/GiftCard";
 import { calculateWei } from "utils/metis";
+import MintFee from "components/MintFee";
 
 const schema = z
   .object({
@@ -106,6 +107,7 @@ export default function MintGiftCard() {
                   helperText={errors.amount?.message}
                   error={!!errors.amount}
                 />
+                <MintFee />
                 <TextField
                   {...materialRegister(register, "message")}
                   label="Message"
