@@ -11,12 +11,8 @@ function getAddressFromSignature(
   owner: string,
   signature: string
 ): boolean {
-  const msgHash = ethers.utils.solidityKeccak256(
-    ["uint256", "address"],
-    [tokenId, owner]
-  );
   const address = ethers.utils.verifyMessage(
-    ethers.utils.arrayify(msgHash),
+    `Token ID: ${tokenId}\nOwner: ${owner}`,
     signature
   );
   return address === owner;

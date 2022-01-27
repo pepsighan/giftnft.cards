@@ -160,12 +160,8 @@ export function useUnwrapGift() {
       // This will let the backend know if the unwrap request is from the owner itself.
       const signer = eths.getSigner();
       const owner = await signer.getAddress();
-      const msgHash = ethers.utils.solidityKeccak256(
-        ["uint256", "address"],
-        [tokenId, owner]
-      );
       const signature = await signer.signMessage(
-        ethers.utils.arrayify(msgHash)
+        `Token ID: ${tokenId}\nOwner: ${owner}`
       );
 
       await axios.post("/api/unwrap", {
