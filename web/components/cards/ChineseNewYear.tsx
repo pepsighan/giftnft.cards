@@ -3,7 +3,7 @@ import { forwardRef, useCallback } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { useAccount } from "store/account";
 import { formatAmount } from "utils/metis";
-import chineseNewYearSvg from "assets/chinese-new-year.svg";
+import chineseNewYear from "assets/chinese-new-year.png";
 
 export default forwardRef(function ChineseNewYear(_, ref) {
   const { control } = useFormContext();
@@ -22,11 +22,13 @@ export default forwardRef(function ChineseNewYear(_, ref) {
         height: 400,
         boxShadow: 6,
         borderRadius: 2,
-        bgcolor: "black",
         position: "relative",
-        background: `url(${chineseNewYearSvg.src})`,
+        overflow: "hidden",
       }}
     >
+      <Box sx={{ position: "absolute", top: 0, left: 0, zIndex: -10 }}>
+        <img src={chineseNewYear.src} width={300} height={400} />
+      </Box>
       <Box
         sx={{
           position: "absolute",
