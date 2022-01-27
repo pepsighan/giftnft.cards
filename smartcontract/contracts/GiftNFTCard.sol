@@ -201,21 +201,13 @@ contract GiftNFTCard is
     function unwrapGiftCardByAdmin(
         uint256 tokenId,
         address owner,
-        bytes memory signature,
         // This fee is calculated by the admin using `gasLimit*gasPrice`.
         uint256 txFee
     ) public onlyOwner {
-        /// Only the signed message of the owner will be able to unwrap the gift.
-        bytes32 msgHash = _prefixed(
-            keccak256(abi.encodePacked(tokenId, owner))
-        );
-        address giftCardOwner = _recoverGiftCardOwner(msgHash, signature);
-
         require(
-            ERC721Upgradeable.ownerOf(tokenId) == giftCardOwner,
+            ERC721Upgradeable.ownerOf(tokenId) == owner,
             "GiftNFTCard: caller is not owner"
         );
-        require(owner == giftCardOwner, "GiftNFTCard: caller is not owner");
 
         GiftCard memory gift = _getGiftCard(tokenId);
         require(gift.amount > txFee, "GiftNFTCard: txFee cannot exceed gift amount");

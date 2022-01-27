@@ -40,8 +40,7 @@ export default async function handler(
     const gasLimit = await contract.estimateGas.unwrapGiftCardByAdmin(
       tokenId,
       owner,
-      // A dummy signature and tx fee just to estimate.
-      "FCF99243A75A461D87FE8FC",
+      // A dummy tx fee just to estimate.
       ethers.BigNumber.from(1e12)
     );
 
