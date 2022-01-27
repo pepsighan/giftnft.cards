@@ -4,13 +4,14 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogTitle,
   Stack,
   Typography,
 } from "@mui/material";
-import { GiftCard, useUnwrapGift } from "store/gifts";
+import { GiftCard, useUnwrapFee, useUnwrapGift } from "store/gifts";
 import { useAsyncFn } from "react-use";
 import { LoadingButton } from "@mui/lab";
+import UnwrapAmount from "components/UnwrapAmount";
+import { ethers } from "ethers";
 
 type UnwrapConfirmationProps = {
   giftCard: GiftCard;
@@ -29,27 +30,43 @@ export default function UnwrapConfirmation({
     onClose();
   }, [giftCard.tokenId, unwrapGift]);
 
+  const { data } = useUnwrapFee(giftCard.tokenId.toString(), open);
+  const txFee = data?.txFee;
+  const isUnwrappable = data?.isUnwrappable;
+  const withdrawAmount = txFee ? giftCard.amount.sub(txFee) : giftCard.amount;
+
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Unwrap your Gift Card</DialogTitle>
       <DialogContent>
-        <Typography>
-          Unwrapping will withdraw the amount stored in the gift card into your
-          account.
-        </Typography>
         <Stack alignItems="center">
           <Box
             component="img"
             src={giftCard.imageDataUrl}
             alt={giftCard.signedBy}
-            sx={{ width: 300, height: 400, mt: 4 }}
+            sx={{ width: 300 / 2, height: 400 / 2, mb: 2 }}
+          />
+
+          <Typography variant="h6">Unwrap Gift Card</Typography>
+          <Typography textAlign="center" color="textSecondary">
+            Unwrapping will withdraw the amount stored in the gift card into
+            your account.
+          </Typography>
+
+          <UnwrapAmount
+            giftCard={giftCard}
+            txFee={txFee ? ethers.BigNumber.from(txFee) : null}
           />
         </Stack>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Close</Button>
-        <LoadingButton variant="contained" onClick={onUnwrap} loading={loading}>
-          Unwrap
+        <LoadingButton
+          variant="contained"
+          onClick={onUnwrap}
+          loading={loading}
+          disabled={!isUnwrappable || withdrawAmount.lte(0)}
+        >
+          {isUnwrappable ? "Unwrap" : "Unwrap Not Available"}
         </LoadingButton>
       </DialogActions>
     </Dialog>

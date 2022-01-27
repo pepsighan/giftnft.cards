@@ -62,7 +62,10 @@ export default async function handler(
       signer
     );
 
-    const giftCardTuple = await contract.getGiftCardByAdmin(tokenId);
+    const giftCardTuple = await contract.getGiftCardOfOwnerByAdmin(
+      tokenId,
+      owner
+    );
     const giftCard = convertGiftCardTupleToObject(giftCardTuple);
     if (giftCard.isUnwrapped) {
       return res.status(400).send({
@@ -74,13 +77,32 @@ export default async function handler(
     const gasLimit = await contract.estimateGas.unwrapGiftCardByAdmin(
       tokenId,
       owner,
-      signature,
       // A dummy tx fee just to estimate.
       ethers.BigNumber.from(1e12)
     );
 
     const txFee = gasLimit.mul(gasPrice);
-    await contract.unwrapGiftCardByAdmin(tokenId, owner, signature, txFee, {
+    // If the gift amount is less than the tx fee, user won't receive anything. And we will be at
+    // a loss on our end as tx fee won't be repaid in full.
+    if (giftCard.amount.lte(txFee)) {
+      // TODO: Log the event and send notification to me.
+      return res.status(400).send({
+        message: "Transaction fee exceeds the gift amount.",
+      });
+    }
+
+    // Balance of the admin account.
+    const balance = await signer.getBalance();
+    // If the tx fee is more than the balance, then cannot unwrap.
+    if (balance.lte(txFee)) {
+      // TODO: Log the event and send notification to me.
+      return res.status(500).send({
+        message:
+          "Cannot unwrap your gift for free at the moment. You can unwrap using your own wallet.",
+      });
+    }
+
+    await contract.unwrapGiftCardByAdmin(tokenId, owner, txFee, {
       gasPrice,
       gasLimit,
     });
@@ -88,10 +110,10 @@ export default async function handler(
     res.status(200).send({
       message: "Your gift has been unwrapped.",
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error(error);
     res.status(500).send({
-      message: "Internal server error",
+      message: error.message || "Internal Server Error",
     });
   }
 }

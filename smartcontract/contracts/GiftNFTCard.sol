@@ -128,13 +128,17 @@ contract GiftNFTCard is
         return card;
     }
 
-    /// Gets the gift card by the token id for an admin.
-    function getGiftCardByAdmin(uint256 tokenId)
+    /// Gets the gift card by the token id of an owner for an admin.
+    function getGiftCardOfOwnerByAdmin(uint256 tokenId, address owner)
         public
         view
         onlyOwner
         returns (GiftCard memory)
     {
+        require(
+            ERC721Upgradeable.ownerOf(tokenId) == owner,
+            "GiftNFTCard: owner is not valid"
+        );
         return _getGiftCard(tokenId);
     }
 
@@ -201,29 +205,25 @@ contract GiftNFTCard is
     function unwrapGiftCardByAdmin(
         uint256 tokenId,
         address owner,
-        bytes memory signature,
         // This fee is calculated by the admin using `gasLimit*gasPrice`.
         uint256 txFee
     ) public onlyOwner {
-        /// Only the signed message of the owner will be able to unwrap the gift.
-        bytes32 msgHash = _prefixed(
-            keccak256(abi.encodePacked(tokenId, owner))
-        );
-        address giftCardOwner = _recoverGiftCardOwner(msgHash, signature);
-
         require(
-            ERC721Upgradeable.ownerOf(tokenId) == giftCardOwner,
+            ERC721Upgradeable.ownerOf(tokenId) == owner,
             "GiftNFTCard: caller is not owner"
         );
-        require(owner == giftCardOwner, "GiftNFTCard: caller is not owner");
+
         GiftCard memory gift = _getGiftCard(tokenId);
+        require(
+            gift.amount > txFee,
+            "GiftNFTCard: txFee cannot exceed gift amount"
+        );
 
         // Deduct the unwrap fees from the gift amount.
-        // TODO: What to do when the fees are more than the wrapped value?
         _totalFees += txFee;
         gift.amount -= txFee;
 
-        _unwrapGiftCardAndDisburse(gift, giftCardOwner);
+        _unwrapGiftCardAndDisburse(gift, owner);
     }
 
     /// Gets the total fees earned till now.

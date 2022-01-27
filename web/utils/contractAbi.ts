@@ -174,11 +174,11 @@ const contractAbi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "tokenId",
+        name: "index",
         type: "uint256",
       },
     ],
-    name: "getGiftCardByAdmin",
+    name: "getGiftCardByIndex",
     outputs: [
       {
         components: [
@@ -245,11 +245,16 @@ const contractAbi = [
     inputs: [
       {
         internalType: "uint256",
-        name: "index",
+        name: "tokenId",
         type: "uint256",
       },
+      {
+        internalType: "address",
+        name: "owner",
+        type: "address",
+      },
     ],
-    name: "getGiftCardByIndex",
+    name: "getGiftCardOfOwnerByAdmin",
     outputs: [
       {
         components: [
@@ -775,11 +780,6 @@ const contractAbi = [
         internalType: "address",
         name: "owner",
         type: "address",
-      },
-      {
-        internalType: "bytes",
-        name: "signature",
-        type: "bytes",
       },
       {
         internalType: "uint256",

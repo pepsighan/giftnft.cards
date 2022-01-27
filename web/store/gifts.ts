@@ -4,7 +4,7 @@ import { useCallback, useEffect } from "react";
 import { getContract, getEthers } from "utils/metamask";
 import { ethers } from "ethers";
 import { convertGiftCardTupleToObject } from "utils/conversion";
-import ky from "ky";
+import axios from "axios";
 
 export type GiftCard = {
   tokenId: ethers.BigNumber;
@@ -167,12 +167,10 @@ export function useUnwrapGift() {
         ethers.utils.arrayify(msgHash)
       );
 
-      await ky.post("/api/unwrap", {
-        json: {
-          tokenId,
-          owner,
-          signature,
-        },
+      await axios.post("/api/unwrap", {
+        tokenId,
+        owner,
+        signature,
       });
       // Refetch the gifts.
       await Promise.all([
@@ -181,5 +179,21 @@ export function useUnwrapGift() {
       ]);
     },
     [client]
+  );
+}
+
+/**
+ * Get the unwrap fee for a given token.
+ */
+export function useUnwrapFee(tokenId: string, enabled: boolean) {
+  const accountId = useAccount(useCallback((state) => state.accountId, []));
+  return useQuery(
+    `unwrap-fee-${tokenId}-${accountId}`,
+    () =>
+      axios
+        .get(`/api/unwrap-fee?tokenId=${tokenId}&owner=${accountId}`)
+        .then((response) => response.data),
+    // Refetch every 10 seconds.
+    { refetchInterval: 10_000, enabled }
   );
 }

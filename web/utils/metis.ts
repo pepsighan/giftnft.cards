@@ -1,18 +1,33 @@
+import BigNumber from "bignumber.js";
+
 /**
  * Calculates the amount in Wei for the amount of $Metis.
  */
-export function calculateWei(amount: string): number {
-  const multiplier = 10 ** 18;
-  return Math.floor(Number(amount) * multiplier);
+export function calculateWei(amount: string): BigNumber {
+  return new BigNumber(amount)
+    .multipliedBy(new BigNumber(10).pow(18))
+    .integerValue();
 }
 
 /**
- * Format the amount to string.
+ * Format the amount (in Metis) to string.
  */
-export function formatAmount(amount: string) {
+export function formatAmount(amount?: string): string {
   if (!amount) {
     return "";
   }
 
-  return `$METIS ${amount}`;
+  return `${amount} METIS`;
+}
+
+/**
+ * Format the amount (in Wei) to string.
+ */
+export function formatWeiAmount(amount?: string): string {
+  if (!amount) {
+    return "";
+  }
+
+  const wei = new BigNumber(amount);
+  return formatAmount(wei.div(new BigNumber(10).pow(18)).toString());
 }
