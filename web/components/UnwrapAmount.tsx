@@ -10,6 +10,8 @@ type UnwrapAmountProps = {
 };
 
 export default function UnwrapAmount({ giftCard, txFee }: UnwrapAmountProps) {
+  const withdrawAmount = txFee ? giftCard.amount.sub(txFee) : giftCard.amount;
+
   return (
     <>
       <Paper
@@ -63,17 +65,18 @@ export default function UnwrapAmount({ giftCard, txFee }: UnwrapAmountProps) {
               Withdraw Amount:
             </Typography>
           </Grid>
-          <Grid item xs={4}>
+          <Grid item xs={4} sx={{ textAlign: "right" }}>
             <Typography
               variant="body2"
               sx={{ textAlign: "right", fontWeight: "medium" }}
             >
-              {formatWeiAmount(
-                txFee
-                  ? giftCard.amount.sub(txFee).toString()
-                  : giftCard.amount.toString()
-              )}
+              {formatWeiAmount(withdrawAmount.toString())}
             </Typography>
+            {withdrawAmount.lte(0) && (
+              <Typography variant="caption" color="error">
+                Cannot withdraw
+              </Typography>
+            )}
           </Grid>
         </Grid>
       </Paper>

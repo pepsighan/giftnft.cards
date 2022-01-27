@@ -33,6 +33,7 @@ export default function UnwrapConfirmation({
   const { data } = useUnwrapFee(giftCard.tokenId.toString(), open);
   const txFee = data?.txFee;
   const isUnwrappable = data?.isUnwrappable;
+  const withdrawAmount = txFee ? giftCard.amount.sub(txFee) : giftCard.amount;
 
   return (
     <Dialog open={open} onClose={onClose}>
@@ -63,7 +64,7 @@ export default function UnwrapConfirmation({
           variant="contained"
           onClick={onUnwrap}
           loading={loading}
-          disabled={!isUnwrappable}
+          disabled={!isUnwrappable || withdrawAmount.lte(0)}
         >
           Unwrap
         </LoadingButton>
