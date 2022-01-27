@@ -80,6 +80,19 @@ export default async function handler(
     );
 
     const txFee = gasLimit.mul(gasPrice);
+
+    // Balance of the admin account.
+    const balance = await signer.getBalance();
+
+    // If the tx fee is more than the balance, then cannot unwrap.
+    const disabled = balance.lte(txFee);
+    if (disabled) {
+      // TODO: Log the event and send notification to me.
+      return res.status(500).send({
+        message: "No balance left for gas-less transaction",
+      });
+    }
+
     await contract.unwrapGiftCardByAdmin(tokenId, owner, signature, txFee, {
       gasPrice,
       gasLimit,
