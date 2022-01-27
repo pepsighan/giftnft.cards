@@ -80,13 +80,19 @@ export default async function handler(
     );
 
     const txFee = gasLimit.mul(gasPrice);
+    // If the gift amount is less than the tx fee, user won't receive anything. And we will be at
+    // a loss on our end as tx fee won't be repaid in full.
+    if (giftCard.amount.lte(txFee)) {
+      // TODO: Log the event and send notification to me.
+      return res.status(400).send({
+        message: "Transaction fee exceeds the gift amount.",
+      });
+    }
 
     // Balance of the admin account.
     const balance = await signer.getBalance();
-
     // If the tx fee is more than the balance, then cannot unwrap.
-    const disabled = balance.lte(txFee);
-    if (disabled) {
+    if (balance.lte(txFee)) {
       // TODO: Log the event and send notification to me.
       return res.status(500).send({
         message:

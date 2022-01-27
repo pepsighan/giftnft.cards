@@ -216,10 +216,11 @@ contract GiftNFTCard is
             "GiftNFTCard: caller is not owner"
         );
         require(owner == giftCardOwner, "GiftNFTCard: caller is not owner");
+
         GiftCard memory gift = _getGiftCard(tokenId);
+        require(gift.amount > txFee, "GiftNFTCard: txFee cannot exceed gift amount");
 
         // Deduct the unwrap fees from the gift amount.
-        // TODO: What to do when the fees are more than the wrapped value?
         _totalFees += txFee;
         gift.amount -= txFee;
 
