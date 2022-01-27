@@ -14,6 +14,7 @@ import { useAsyncFn } from "react-use";
 import GenericGiftCard from "components/cards/GenericGiftCard";
 import { calculateMintFee, calculateWei } from "utils/metis";
 import MintFee from "components/MintFee";
+import ChineseNewYear from "components/cards/ChineseNewYear";
 
 const schema = z
   .object({
@@ -90,7 +91,7 @@ export default function MintGiftCard() {
         <Grid container spacing={8} sx={{ mt: 2 }}>
           <Grid item md={6}>
             <Stack alignItems="flex-end">
-              <GenericGiftCard ref={giftCardRef} />
+              <ChineseNewYear ref={giftCardRef} />
             </Stack>
           </Grid>
 
