@@ -7,10 +7,11 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import { GiftCard, useUnwrapGift } from "store/gifts";
+import { GiftCard, useUnwrapFee, useUnwrapGift } from "store/gifts";
 import { useAsyncFn } from "react-use";
 import { LoadingButton } from "@mui/lab";
 import UnwrapAmount from "components/UnwrapAmount";
+import { ethers } from "ethers";
 
 type UnwrapConfirmationProps = {
   giftCard: GiftCard;
@@ -29,6 +30,10 @@ export default function UnwrapConfirmation({
     onClose();
   }, [giftCard.tokenId, unwrapGift]);
 
+  const { data } = useUnwrapFee(giftCard.tokenId.toString(), open);
+  const txFee = data?.txFee;
+  const isUnwrappable = data?.isUnwrappable;
+
   return (
     <Dialog open={open} onClose={onClose}>
       <DialogContent>
@@ -46,12 +51,20 @@ export default function UnwrapConfirmation({
             your account.
           </Typography>
 
-          <UnwrapAmount giftCard={giftCard} />
+          <UnwrapAmount
+            giftCard={giftCard}
+            txFee={txFee ? ethers.BigNumber.from(txFee) : null}
+          />
         </Stack>
       </DialogContent>
       <DialogActions>
         <Button onClick={onClose}>Close</Button>
-        <LoadingButton variant="contained" onClick={onUnwrap} loading={loading}>
+        <LoadingButton
+          variant="contained"
+          onClick={onUnwrap}
+          loading={loading}
+          disabled={!isUnwrappable}
+        >
           Unwrap
         </LoadingButton>
       </DialogActions>

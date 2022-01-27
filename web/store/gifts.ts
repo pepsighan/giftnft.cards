@@ -181,3 +181,19 @@ export function useUnwrapGift() {
     [client]
   );
 }
+
+/**
+ * Get the unwrap fee for a given token.
+ */
+export function useUnwrapFee(tokenId: string, enabled: boolean) {
+  const accountId = useAccount(useCallback((state) => state.accountId, []));
+  return useQuery(
+    `unwrap-fee-${tokenId}-${accountId}`,
+    () =>
+      axios
+        .get(`/api/unwrap-fee?tokenId=${tokenId}&owner=${accountId}`)
+        .then((response) => response.data),
+    // Refetch every 10 seconds.
+    { refetchInterval: 10_000, enabled }
+  );
+}

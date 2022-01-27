@@ -1,13 +1,15 @@
 import { grey } from "@mui/material/colors";
-import { CardContent, Grid, Paper, Typography } from "@mui/material";
+import { Grid, Paper, Typography } from "@mui/material";
 import { formatWeiAmount } from "utils/metis";
 import { GiftCard } from "store/gifts";
+import { ethers } from "ethers";
 
 type UnwrapAmountProps = {
+  txFee: ethers.BigNumber | null;
   giftCard: GiftCard;
 };
 
-export default function UnwrapAmount({ giftCard }: UnwrapAmountProps) {
+export default function UnwrapAmount({ giftCard, txFee }: UnwrapAmountProps) {
   return (
     <>
       <Paper
@@ -16,7 +18,7 @@ export default function UnwrapAmount({ giftCard }: UnwrapAmountProps) {
         sx={{ width: "100%", mt: 2, bgcolor: grey["100"] }}
       >
         <Grid container spacing={1} sx={{ p: 2 }}>
-          <Grid item xs={9.5}>
+          <Grid item xs={8}>
             <Typography
               variant="body2"
               color="textSecondary"
@@ -25,7 +27,7 @@ export default function UnwrapAmount({ giftCard }: UnwrapAmountProps) {
               Amount:
             </Typography>
           </Grid>
-          <Grid item xs={2.5}>
+          <Grid item xs={4}>
             <Typography
               variant="body2"
               sx={{ textAlign: "right", fontWeight: "medium" }}
@@ -34,7 +36,7 @@ export default function UnwrapAmount({ giftCard }: UnwrapAmountProps) {
             </Typography>
           </Grid>
 
-          <Grid item xs={9.5}>
+          <Grid item xs={8}>
             <Typography
               variant="body2"
               color="textSecondary"
@@ -43,16 +45,16 @@ export default function UnwrapAmount({ giftCard }: UnwrapAmountProps) {
               Transaction Fee:
             </Typography>
           </Grid>
-          <Grid item xs={2.5}>
+          <Grid item xs={4}>
             <Typography
               variant="body2"
               sx={{ textAlign: "right", fontWeight: "medium" }}
             >
-              -{formatWeiAmount(giftCard.amount.toString())}
+              -{formatWeiAmount(txFee?.toString())}
             </Typography>
           </Grid>
 
-          <Grid item xs={9.5}>
+          <Grid item xs={8}>
             <Typography
               variant="body2"
               color="textSecondary"
@@ -61,12 +63,16 @@ export default function UnwrapAmount({ giftCard }: UnwrapAmountProps) {
               Withdraw Amount:
             </Typography>
           </Grid>
-          <Grid item xs={2.5}>
+          <Grid item xs={4}>
             <Typography
               variant="body2"
               sx={{ textAlign: "right", fontWeight: "medium" }}
             >
-              {formatWeiAmount(giftCard.amount.toString())}
+              {formatWeiAmount(
+                txFee
+                  ? giftCard.amount.sub(txFee).toString()
+                  : giftCard.amount.toString()
+              )}
             </Typography>
           </Grid>
         </Grid>
