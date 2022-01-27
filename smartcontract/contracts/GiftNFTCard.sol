@@ -79,9 +79,15 @@ contract GiftNFTCard is
         string memory message,
         string memory signedBy
     ) public payable {
+        // Minimum gift value that is added to the gift card is 0.1 Metis.
+        uint256 minGiftValue = 100_000_000_000_000_000;
+        uint256 minMintFee = _calculateMintFees(minGiftValue);
+        // This is the actual minimum value that needs to be sent by the user.
+        uint256 minValue = minGiftValue + minMintFee;
+
         require(
-            msg.value > 100_000_000_000_000_000,
-            "GiftNFTCard: gift card needs to have at least 0.1 Metis"
+            msg.value > minValue,
+            "GiftNFTCard: gift card needs to have at least 0.1 Metis + mint fees"
         );
 
         // Take a cut from the minting.
