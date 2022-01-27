@@ -128,13 +128,17 @@ contract GiftNFTCard is
         return card;
     }
 
-    /// Gets the gift card by the token id for an admin.
-    function getGiftCardByAdmin(uint256 tokenId)
+    /// Gets the gift card by the token id of an owner for an admin.
+    function getGiftCardOfOwnerByAdmin(uint256 tokenId, address owner)
         public
         view
         onlyOwner
         returns (GiftCard memory)
     {
+        require(
+            ERC721Upgradeable.ownerOf(tokenId) == owner,
+            "GiftNFTCard: owner is not valid"
+        );
         return _getGiftCard(tokenId);
     }
 
@@ -210,7 +214,10 @@ contract GiftNFTCard is
         );
 
         GiftCard memory gift = _getGiftCard(tokenId);
-        require(gift.amount > txFee, "GiftNFTCard: txFee cannot exceed gift amount");
+        require(
+            gift.amount > txFee,
+            "GiftNFTCard: txFee cannot exceed gift amount"
+        );
 
         // Deduct the unwrap fees from the gift amount.
         _totalFees += txFee;
