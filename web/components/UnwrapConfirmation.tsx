@@ -66,7 +66,7 @@ export default function UnwrapConfirmation({
           loading={loading}
           disabled={!isUnwrappable || withdrawAmount.lte(0)}
         >
-          Unwrap
+          {isUnwrappable ? "Unwrap" : "Unwrap Not Available"}
         </LoadingButton>
       </DialogActions>
     </Dialog>
