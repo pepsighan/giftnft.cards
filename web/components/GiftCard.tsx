@@ -12,7 +12,6 @@ export default forwardRef(function GiftCard(_, ref) {
   const message = useWatch({ control, name: "message" });
   const name = useWatch({ control, name: "name" });
   const amount = useWatch({ control, name: "amount" });
-  const unit = useWatch({ control, name: "amountTenPowerMultiplier" });
   const accountId = useAccount(useCallback((state) => state.accountId, []));
 
   return (
@@ -31,7 +30,7 @@ export default forwardRef(function GiftCard(_, ref) {
     >
       <Box sx={{ position: "absolute", top: 0, right: 0, width: "100%", p: 2 }}>
         <Typography variant="h6" color="white" textAlign="right">
-          {formatAmount(amount, unit)}
+          {formatAmount(amount)}
         </Typography>
       </Box>
 
