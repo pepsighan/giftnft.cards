@@ -89,7 +89,8 @@ export default async function handler(
     if (disabled) {
       // TODO: Log the event and send notification to me.
       return res.status(500).send({
-        message: "No balance left for gas-less transaction",
+        message:
+          "Cannot unwrap your gift for free at the moment. You can unwrap using your own wallet.",
       });
     }
 
