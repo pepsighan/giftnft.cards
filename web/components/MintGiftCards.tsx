@@ -12,7 +12,7 @@ import SentGifts from "components/SentGifts";
 import RecipientTextField from "components/RecipientTextField";
 import { useAsyncFn } from "react-use";
 import GiftCard from "components/GiftCard";
-import { calculateWei } from "utils/metis";
+import { calculateMintFee, calculateWei } from "utils/metis";
 import MintFee from "components/MintFee";
 
 const schema = z
@@ -61,11 +61,14 @@ export default function MintGiftCard() {
       });
       const imageDataUrl = canvas.toDataURL("image/webp");
 
+      const giftAmount = calculateWei(state.amount);
+      const mintFee = calculateMintFee(giftAmount);
+      const totalAmount = giftAmount.plus(mintFee);
+
       await mintGiftCard({
         signedBy: state.name,
         message: state.message,
-        // Convert the amount to Wei.
-        amount: calculateWei(state.amount).toString(),
+        amount: totalAmount.toString(),
         recipient: state.recipient,
         imageDataUrl,
       });
