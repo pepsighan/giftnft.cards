@@ -59,6 +59,7 @@ export default function MintGiftCard() {
       const canvas = await html2canvas(giftCardRef.current!, {
         width: 300,
         height: 400,
+        scale: 1,
       });
       const imageDataUrl = canvas.toDataURL("image/webp");
 
