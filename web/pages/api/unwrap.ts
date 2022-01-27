@@ -70,6 +70,9 @@ export default async function handler(
       });
     }
 
+    // TODO: Verify if the tokenId is owned by the owner. So that some random user does not try to deplete the
+    // admin wallet by sending in failing transactions repeatedly.
+
     const gasPrice = await signer.getGasPrice();
     const gasLimit = await contract.estimateGas.unwrapGiftCardByAdmin(
       tokenId,
