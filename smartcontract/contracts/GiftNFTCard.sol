@@ -79,10 +79,9 @@ contract GiftNFTCard is
         string memory message,
         string memory signedBy
     ) public payable {
-        // TODO: Require a minimum value of gift card amount.
         require(
-            msg.value > 0,
-            "GiftNFTCard: gift card needs to have some amount"
+            msg.value > 100_000_000_000_000_000,
+            "GiftNFTCard: gift card needs to have at least 0.1 Metis"
         );
 
         // Take a cut from the minting.
