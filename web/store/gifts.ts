@@ -123,7 +123,7 @@ export function useMintGiftCard() {
       if (!contract) {
         return;
       }
-      await contract.safeMint(
+      const tx = await contract.safeMint(
         arg.recipient,
         arg.imageDataUrl,
         arg.message,
@@ -131,6 +131,7 @@ export function useMintGiftCard() {
         // Send the following amount to be wrapped in the gift card.
         { value: arg.amount }
       );
+      await tx.wait();
 
       // Refetch the gifts.
       await Promise.all([
