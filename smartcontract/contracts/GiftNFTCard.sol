@@ -223,7 +223,7 @@ contract GiftNFTCard is
         _totalFees += txFee;
         gift.amount -= txFee;
 
-        _unwrapGiftCardAndDisburse(gift, giftCardOwner);
+        _unwrapGiftCardAndDisburse(gift, owner);
     }
 
     /// Gets the total fees earned till now.
