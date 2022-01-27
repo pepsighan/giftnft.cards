@@ -120,7 +120,7 @@ contract GiftNFTCard is
     function _calculateMintFees(uint256 value) private pure returns (uint256) {
         // Fee is calculated by using 5% of gift value (x). And the amount (y) that is sent
         // to the contract is x + 5% of x.
-        uint256 fee = value * 100 / 105;
+        uint256 fee = value * 5 / 105;
 
         uint256 oneMetis = 1_000_000_000_000_000_000;
         if (fee > oneMetis) {
