@@ -102,10 +102,12 @@ export default async function handler(
       });
     }
 
-    await contract.unwrapGiftCardByAdmin(tokenId, owner, txFee, {
+    const tx = await contract.unwrapGiftCardByAdmin(tokenId, owner, txFee, {
       gasPrice,
       gasLimit,
     });
+    await tx.wait();
+
     // TODO: Because transactions are not resolved using the async-await, list to events.
     res.status(200).send({
       message: "Your gift has been unwrapped.",
