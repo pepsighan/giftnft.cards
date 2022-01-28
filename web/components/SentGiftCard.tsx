@@ -19,14 +19,22 @@ export default function SentGiftCard({ giftCard }: SentGiftCardProps) {
   return (
     <>
       <Paper
-        sx={{ width: 300 / 1.5, height: 400 / 1.5, mb: 2, cursor: "pointer" }}
+        sx={{
+          width: { xs: 300 / 2, md: 300 / 1.5 },
+          height: { xs: 400 / 2, md: 400 / 1.5 },
+          mb: 2,
+          cursor: "pointer",
+        }}
         onClick={onOpen}
       >
         <Box
           component="img"
           src={giftCard.imageDataUrl}
           alt={giftCard.signedBy}
-          sx={{ width: 300 / 1.5, height: 400 / 1.5 }}
+          sx={{
+            width: { xs: 300 / 2, md: 300 / 1.5 },
+            height: { xs: 400 / 2, md: 400 / 1.5 },
+          }}
         />
       </Paper>
 
