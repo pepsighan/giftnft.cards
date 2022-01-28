@@ -118,16 +118,31 @@ export default function MintGiftCard() {
       </Typography>
 
       <FormProvider {...form}>
-        <Grid container sx={{ mt: 2 }}>
-          <Grid item md={6} sx={{ pr: { md: 4 } }}>
+        <Grid container spacing={8} justifyContent="center" sx={{ mt: 2 }}>
+          <Grid item md={6}>
             <Stack alignItems="flex-end">
               <Box>
-                <Stack direction="row" alignItems="center" spacing={2}>
-                  <IconButton onClick={onPreviousCard}>
+                <Stack
+                  direction={{ xs: "column", md: "row" }}
+                  justifyContent="center"
+                  alignItems="center"
+                  spacing={2}
+                >
+                  <IconButton
+                    onClick={onPreviousCard}
+                    sx={{
+                      transform: { xs: "rotateZ(90deg)", md: "rotateZ(0deg)" },
+                    }}
+                  >
                     <MdChevronLeft />
                   </IconButton>
                   <GiftCard ref={giftCardRef} />
-                  <IconButton onClick={onNextCard}>
+                  <IconButton
+                    onClick={onNextCard}
+                    sx={{
+                      transform: { xs: "rotateZ(90deg)", md: "rotateZ(0deg)" },
+                    }}
+                  >
                     <MdChevronRight />
                   </IconButton>
                 </Stack>
@@ -146,7 +161,7 @@ export default function MintGiftCard() {
               <Stack
                 component="form"
                 spacing={2}
-                sx={{ width: 400 }}
+                sx={{ maxWidth: 400 }}
                 onSubmit={handleSubmit(onMintGiftCard)}
               >
                 <RecipientTextField />
