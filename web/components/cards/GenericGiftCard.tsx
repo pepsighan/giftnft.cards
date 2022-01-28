@@ -3,6 +3,7 @@ import { forwardRef, useCallback } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { useAccount } from "store/account";
 import { formatAmount } from "utils/metis";
+import gift from "assets/gift.png";
 
 /**
  * The generated Gift Card which is then converted to an image when minting the NFT.
@@ -34,7 +35,13 @@ export default forwardRef(function GenericGiftCard(_, ref) {
         </Typography>
       </Box>
 
-      <Typography variant="h1">🎁</Typography>
+      <Box
+        component="img"
+        src={gift.src}
+        width={100}
+        height={100}
+        sx={{ mb: 2 }}
+      />
       <Typography
         variant="h4"
         color="white"
