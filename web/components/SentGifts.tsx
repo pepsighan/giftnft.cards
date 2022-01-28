@@ -14,7 +14,7 @@ export default function SentGifts() {
 
   return (
     <Container maxWidth="lg" sx={{ mt: 8, mb: 4 }}>
-      <Typography variant="h5" sx={{ mb: 2 }}>
+      <Typography variant="h5" textAlign="center" sx={{ mb: 2 }}>
         Gifts you sent
       </Typography>
 
@@ -25,7 +25,7 @@ export default function SentGifts() {
       )}
 
       {!isLoading && (gifts ?? []).length > 0 && (
-        <Grid container spacing={4}>
+        <Grid container spacing={4} justifyContent="center">
           {(gifts ?? []).map((it) => (
             <Grid item key={it.tokenId._hex}>
               <SentGiftCard giftCard={it} />
