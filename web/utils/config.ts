@@ -14,4 +14,24 @@ if (!config.CONTRACT_ADDRESS || !config.CHAIN_ID) {
   throw new Error("environment is not configured");
 }
 
+/**
+ * Gets the network configuration to connect and execute transactions.
+ */
+export function getMetisNetworkConfig(environment: string) {
+  switch (environment) {
+    case "mainnet":
+      return {
+        endpoint: config.MAINNET_HTTP_RPC_ENDPOINT,
+        privateKey: config.MAINNET_ADMIN_PRIVATE_KEY,
+      };
+    case "testnet":
+      return {
+        endpoint: config.TESTNET_HTTP_RPC_ENDPOINT,
+        privateKey: config.TESTNET_ADMIN_PRIVATE_KEY,
+      };
+    default:
+      throw new Error("unreachable");
+  }
+}
+
 export default config;

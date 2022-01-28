@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { ethers } from "ethers";
-import config from "utils/config";
-import { convertGiftCardTupleToObject } from "utils/conversion";
+import config, { getMetisNetworkConfig } from "utils/config";
 
 /**
  * Unwrap the gift card using the admin account itself so that the user does not have to pay for
@@ -17,6 +16,13 @@ export default async function handler(
     });
   }
 
+  const { net } = req.query;
+  if (net !== "mainnet" && net !== "testnet") {
+    return res.status(404).send({
+      message: "Not found",
+    });
+  }
+
   const { tokenId, owner } = req.query ?? {};
   if (!tokenId || !owner) {
     return res.status(400).send({
@@ -24,12 +30,17 @@ export default async function handler(
     });
   }
 
-  try {
-    const provider = new ethers.providers.JsonRpcProvider(
-      config.HTTP_RPC_ENDPOINT
-    );
+  const { endpoint, privateKey } = getMetisNetworkConfig(net);
+  if (!endpoint || !privateKey) {
+    return res.status(500).send({
+      message: "Internal server error",
+    });
+  }
 
-    const signer = new ethers.Wallet(config.ADMIN_PRIVATE_KEY!, provider);
+  try {
+    const provider = new ethers.providers.JsonRpcProvider(endpoint);
+
+    const signer = new ethers.Wallet(privateKey, provider);
     const contract = new ethers.Contract(
       config.CONTRACT_ADDRESS,
       config.CONTRACT_ABI,
