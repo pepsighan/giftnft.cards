@@ -24,7 +24,13 @@ export default function Navigation({ children }: NavigationProps) {
         {children}
 
         {accountId && (
-          <Button sx={{ position: "absolute", right: 24 }}>
+          <Button
+            sx={{
+              position: "absolute",
+              right: 24,
+              display: { xs: "none", md: "flex" },
+            }}
+          >
             <Box sx={{ width: 18, height: 18, mr: 2 }}>
               <MetamaskIcon />
             </Box>

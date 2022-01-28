@@ -1,5 +1,6 @@
 import {
   Box,
+  Container,
   Grid,
   IconButton,
   Stack,
@@ -111,14 +112,14 @@ export default function MintGiftCard() {
   );
 
   return (
-    <>
+    <Container>
       <Typography variant="h5" textAlign="center" sx={{ mt: 4 }}>
         Mint a Gift Card
       </Typography>
 
       <FormProvider {...form}>
-        <Grid container spacing={8} sx={{ mt: 2 }}>
-          <Grid item md={6}>
+        <Grid container sx={{ mt: 2 }}>
+          <Grid item md={6} sx={{ pr: { md: 4 } }}>
             <Stack alignItems="flex-end">
               <Box>
                 <Stack direction="row" alignItems="center" spacing={2}>
@@ -190,6 +191,6 @@ export default function MintGiftCard() {
       </FormProvider>
 
       <SentGifts />
-    </>
+    </Container>
   );
 }
