@@ -46,7 +46,7 @@ export default async function handler(
     });
   }
 
-  const { endpoint, privateKey } = getMetisNetworkConfig(net);
+  const { endpoint, privateKey, contractAddress } = getMetisNetworkConfig(net);
   if (!endpoint || !privateKey) {
     return res.status(500).send({
       message: "Internal server error",
@@ -65,7 +65,7 @@ export default async function handler(
 
     const signer = new ethers.Wallet(privateKey, provider);
     const contract = new ethers.Contract(
-      config.CONTRACT_ADDRESS,
+      contractAddress,
       config.CONTRACT_ABI,
       signer
     );
