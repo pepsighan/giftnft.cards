@@ -7,7 +7,7 @@ import { formatAmount } from "utils/metis";
 /**
  * The generated Gift Card which is then converted to an image when minting the NFT.
  */
-export default forwardRef(function GiftCard(_, ref) {
+export default forwardRef(function GenericGiftCard(_, ref) {
   const { control } = useFormContext();
   const message = useWatch({ control, name: "message" });
   const name = useWatch({ control, name: "name" });
@@ -48,24 +48,14 @@ export default forwardRef(function GiftCard(_, ref) {
         sx={{ position: "absolute", bottom: 0, left: 0, width: "100%", p: 2 }}
       >
         {name && (
-          <>
-            <Typography
-              component="p"
-              variant="caption"
-              textAlign="center"
-              color="grey.300"
-            >
-              With Love
-            </Typography>
-            <Typography
-              variant="subtitle2"
-              textAlign="center"
-              color="white"
-              sx={{ mt: -0.5 }}
-            >
-              {name}
-            </Typography>
-          </>
+          <Typography
+            variant="subtitle2"
+            textAlign="center"
+            color="white"
+            sx={{ mt: -0.5 }}
+          >
+            {name}
+          </Typography>
         )}
         <Typography
           color="grey.500"

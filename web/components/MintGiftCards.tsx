@@ -1,6 +1,13 @@
-import { Grid, Stack, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Grid,
+  IconButton,
+  Stack,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { LoadingButton } from "@mui/lab";
-import { useRef } from "react";
+import { useCallback, useRef, useState } from "react";
 import { FormProvider, useForm } from "react-hook-form";
 import { materialRegister } from "utils/materialForm";
 import { z } from "zod";
@@ -11,9 +18,13 @@ import html2canvas from "html2canvas";
 import SentGifts from "components/SentGifts";
 import RecipientTextField from "components/RecipientTextField";
 import { useAsyncFn } from "react-use";
-import GiftCard from "components/GiftCard";
 import { calculateMintFee, calculateWei } from "utils/metis";
 import MintFee from "components/MintFee";
+import ChineseNewYear from "components/cards/ChineseNewYear";
+import { MdChevronLeft, MdChevronRight } from "react-icons/md";
+import GenericGiftCard from "components/cards/GenericGiftCard";
+
+const giftCards = [GenericGiftCard, ChineseNewYear];
 
 const schema = z
   .object({
@@ -58,6 +69,7 @@ export default function MintGiftCard() {
       const canvas = await html2canvas(giftCardRef.current!, {
         width: 300,
         height: 400,
+        scale: 1,
       });
       const imageDataUrl = canvas.toDataURL("image/webp");
 
@@ -80,6 +92,19 @@ export default function MintGiftCard() {
     [enqueueSnackbar, mintGiftCard, reset]
   );
 
+  const [cardIndex, setCardIndex] = useState(0);
+  const GiftCard = giftCards[cardIndex];
+
+  const onNextCard = useCallback(
+    () => setCardIndex((index) => (index + 1) % giftCards.length),
+    []
+  );
+  const onPreviousCard = useCallback(
+    () =>
+      setCardIndex((index) => (index === 0 ? giftCards.length - 1 : index - 1)),
+    []
+  );
+
   return (
     <>
       <Typography variant="h5" textAlign="center" sx={{ mt: 4 }}>
@@ -90,7 +115,23 @@ export default function MintGiftCard() {
         <Grid container spacing={8} sx={{ mt: 2 }}>
           <Grid item md={6}>
             <Stack alignItems="flex-end">
-              <GiftCard ref={giftCardRef} />
+              <Box>
+                <Stack direction="row" alignItems="center" spacing={2}>
+                  <IconButton onClick={onPreviousCard}>
+                    <MdChevronLeft />
+                  </IconButton>
+                  <GiftCard ref={giftCardRef} />
+                  <IconButton onClick={onNextCard}>
+                    <MdChevronRight />
+                  </IconButton>
+                </Stack>
+                <Typography
+                  textAlign="center"
+                  sx={{ mt: 1, fontSize: "0.75rem", color: "grey.600" }}
+                >
+                  Select a gift card of your choosing.
+                </Typography>
+              </Box>
             </Stack>
           </Grid>
 
