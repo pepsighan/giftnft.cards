@@ -165,7 +165,7 @@ export default function MintGiftCard() {
               <Stack
                 component="form"
                 spacing={2}
-                sx={{ maxWidth: 400 }}
+                sx={{ maxWidth: 400, width: "100%" }}
                 onSubmit={handleSubmit(onMintGiftCard)}
               >
                 <RecipientTextField />
