@@ -26,7 +26,7 @@ export default function MyGifts() {
         )}
 
         {!isLoading && (gifts ?? []).length > 0 && (
-          <Grid container spacing={4} sx={{ mt: 2 }}>
+          <Grid container spacing={4} justifyContent="center" sx={{ mt: 2 }}>
             {(gifts ?? []).map((it) => (
               <Grid item key={it.tokenId._hex}>
                 <MyGiftCard giftCard={it} />
