@@ -18,7 +18,7 @@ import html2canvas from "html2canvas";
 import SentGifts from "components/SentGifts";
 import RecipientTextField from "components/RecipientTextField";
 import { useAsyncFn } from "react-use";
-import { calculateMintFee, calculateWei } from "utils/metis";
+import { calculateMintFee, calculateWei, minGiftValue } from "utils/metis";
 import MintFee from "components/MintFee";
 import ChineseNewYear from "components/cards/ChineseNewYear";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
@@ -35,8 +35,8 @@ const schema = z
       .string()
       .regex(/^0x[a-fA-F0-9]{40}$/, "Invalid wallet address"),
   })
-  .refine((data) => calculateWei(data.amount).gt(0), {
-    message: "A gift card needs to have amount",
+  .refine((data) => calculateWei(data.amount).gte(minGiftValue), {
+    message: "A gift card needs to have at least 0.1 Metis",
     path: ["amount"],
   });
 
