@@ -15,12 +15,19 @@ export default function MyGiftCard({ giftCard }: MyGiftCardProps) {
 
   return (
     <>
-      <Box sx={{ width: 300, height: 400, mb: 2, position: "relative" }}>
+      <Box
+        sx={{
+          width: 300 / 1.2,
+          height: 400 / 1.2,
+          mb: 2,
+          position: "relative",
+        }}
+      >
         <Box
           component="img"
           src={giftCard.imageDataUrl}
           alt={giftCard.signedBy}
-          sx={{ width: 300, height: 400 }}
+          sx={{ width: 300 / 1.2, height: 400 / 1.2 }}
         />
 
         {!giftCard.isUnwrapped && (

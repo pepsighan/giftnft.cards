@@ -1,6 +1,7 @@
 import detectEthereumProvider from "@metamask/detect-provider";
 import { ethers } from "ethers";
 import config from "utils/config";
+import { useAccount } from "store/account";
 
 /**
  * Gets metamask client.
@@ -29,10 +30,12 @@ export async function getContract(): Promise<ethers.Contract | null> {
     return null;
   }
 
+  const network = useAccount.getState().network;
+  const contractAddress =
+    network === "mainnet"
+      ? config.MAINNET_CONTRACT_ADDRESS
+      : config.TESTNET_CONTRACT_ADDRESS;
+
   const signer = eth.getSigner();
-  return new ethers.Contract(
-    config.CONTRACT_ADDRESS,
-    config.CONTRACT_ABI,
-    signer
-  );
+  return new ethers.Contract(contractAddress, config.CONTRACT_ABI, signer);
 }

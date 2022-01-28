@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { ethers } from "ethers";
-import config from "utils/config";
+import config, { getMetisNetworkConfig } from "utils/config";
 import { convertGiftCardTupleToObject } from "utils/conversion";
 
 /**
@@ -32,10 +32,24 @@ export default async function handler(
     });
   }
 
+  const { net } = req.query;
+  if (net !== "mainnet" && net !== "testnet") {
+    return res.status(404).send({
+      message: "Not found",
+    });
+  }
+
   const { tokenId, owner, signature } = req.body ?? {};
   if (!tokenId || !owner || !signature) {
     return res.status(400).send({
       message: "Requires `tokenId`, `owner` and `signature` to be present",
+    });
+  }
+
+  const { endpoint, privateKey, contractAddress } = getMetisNetworkConfig(net);
+  if (!endpoint || !privateKey) {
+    return res.status(500).send({
+      message: "Internal server error",
     });
   }
 
@@ -47,13 +61,11 @@ export default async function handler(
       });
     }
 
-    const provider = new ethers.providers.JsonRpcProvider(
-      config.HTTP_RPC_ENDPOINT
-    );
+    const provider = new ethers.providers.JsonRpcProvider(endpoint);
 
-    const signer = new ethers.Wallet(config.ADMIN_PRIVATE_KEY!, provider);
+    const signer = new ethers.Wallet(privateKey, provider);
     const contract = new ethers.Contract(
-      config.CONTRACT_ADDRESS,
+      contractAddress,
       config.CONTRACT_ABI,
       signer
     );

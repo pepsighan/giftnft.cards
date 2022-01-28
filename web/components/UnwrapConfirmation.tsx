@@ -12,6 +12,7 @@ import { useAsyncFn } from "react-use";
 import { LoadingButton } from "@mui/lab";
 import UnwrapAmount from "components/UnwrapAmount";
 import { ethers } from "ethers";
+import { useSnackbar } from "notistack";
 
 type UnwrapConfirmationProps = {
   giftCard: GiftCard;
@@ -25,9 +26,23 @@ export default function UnwrapConfirmation({
   onClose,
 }: UnwrapConfirmationProps) {
   const unwrapGift = useUnwrapGift();
+  const { enqueueSnackbar } = useSnackbar();
+
   const [{ loading }, onUnwrap] = useAsyncFn(async () => {
-    await unwrapGift(giftCard.tokenId.toString());
-    onClose();
+    try {
+      await unwrapGift(giftCard.tokenId.toString());
+      enqueueSnackbar("Unwrapping your gift card...", {
+        variant: "success",
+      });
+      onClose();
+    } catch (error: any) {
+      enqueueSnackbar(
+        error.data?.message || "Failed to unwrap your gift card.",
+        {
+          variant: "error",
+        }
+      );
+    }
   }, [giftCard.tokenId, unwrapGift]);
 
   const { data, isLoading: unwrapFeeLoading } = useUnwrapFee(
