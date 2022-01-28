@@ -1,14 +1,6 @@
-import {
-  Avatar,
-  Box,
-  Button,
-  Container,
-  Stack,
-  Typography,
-} from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import ConnectWallet from "components/ConnectWallet";
-import Image from "next/image";
-import chineseNewYear from "assets/chinese-new-year.png";
+import gift from "assets/gift.png";
 
 const width = 300 / 1.5;
 const height = 400 / 1.5;
@@ -17,13 +9,13 @@ export default function ConnectView() {
   return (
     <>
       <Stack alignItems="center" sx={{ py: 3, bgcolor: "grey.100" }}>
-        <Typography
-          sx={{
-            fontSize: 96,
-          }}
-        >
-          🎁
-        </Typography>
+        <Box
+          component="img"
+          src={gift.src}
+          width={100}
+          height={100}
+          sx={{ mb: 2 }}
+        />
       </Stack>
       <Stack
         direction="row"

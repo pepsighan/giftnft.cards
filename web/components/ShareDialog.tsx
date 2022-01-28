@@ -1,5 +1,6 @@
 import {
   Box,
+  CircularProgress,
   Dialog,
   DialogContent,
   DialogTitle,
@@ -15,6 +16,7 @@ import {
   WhatsappIcon,
   WhatsappShareButton,
 } from "react-share";
+import { useOwnerOfNFT } from "store/nft";
 
 type ShareDialogProps = {
   open: boolean;
@@ -30,9 +32,13 @@ export default function ShareDialog({
   onClose,
   giftCard,
 }: ShareDialogProps) {
+  const { data: owner, isLoading } = useOwnerOfNFT(
+    giftCard.tokenId.toString(),
+    open
+  );
+
   const url = "https://giftnft.cards/";
-  const message =
-    "I have sent a Gift Card NFT to your account. To access and unwrap your gift, visit Gift NFT Cards.";
+  const message = `I have sent a Gift Card NFT to your wallet (${owner}).\nTo access and unwrap your gift, open the Gift Card NFT app.`;
 
   return (
     <Dialog open={open} onClose={onClose}>
@@ -51,24 +57,33 @@ export default function ShareDialog({
           Share to the person that you have sent a Gift Card NFT
           <br /> to their account.
         </Typography>
-        <Stack
-          direction="row"
-          justifyContent="center"
-          spacing={2}
-          sx={{ mt: 1 }}
-        >
-          <TwitterShareButton url={url} title={message}>
-            <TwitterIcon size={32} round />
-          </TwitterShareButton>
 
-          <WhatsappShareButton url={url} title={message}>
-            <WhatsappIcon size={32} round />
-          </WhatsappShareButton>
+        {isLoading && (
+          <Stack alignItems="center" sx={{ mt: 1 }}>
+            <CircularProgress />
+          </Stack>
+        )}
 
-          <TelegramShareButton url={url} title={message}>
-            <TelegramIcon size={32} round />
-          </TelegramShareButton>
-        </Stack>
+        {!isLoading && (
+          <Stack
+            direction="row"
+            justifyContent="center"
+            spacing={2}
+            sx={{ mt: 1 }}
+          >
+            <TwitterShareButton url={url} title={message}>
+              <TwitterIcon size={32} round />
+            </TwitterShareButton>
+
+            <WhatsappShareButton url={url} title={message}>
+              <WhatsappIcon size={32} round />
+            </WhatsappShareButton>
+
+            <TelegramShareButton url={url} title={message}>
+              <TelegramIcon size={32} round />
+            </TelegramShareButton>
+          </Stack>
+        )}
       </DialogContent>
     </Dialog>
   );

@@ -113,12 +113,16 @@ export default function MintGiftCard() {
 
   return (
     <Container>
-      <Typography variant="h5" textAlign="center" sx={{ mt: 4 }}>
+      <Typography
+        variant="h5"
+        textAlign="center"
+        sx={{ mt: 4, mb: { xs: 2, md: 8 } }}
+      >
         Mint a Gift Card
       </Typography>
 
       <FormProvider {...form}>
-        <Grid container spacing={8} justifyContent="center" sx={{ mt: 2 }}>
+        <Grid container spacing={8} justifyContent="center">
           <Grid item md={6}>
             <Stack alignItems="flex-end">
               <Box>
@@ -161,7 +165,7 @@ export default function MintGiftCard() {
               <Stack
                 component="form"
                 spacing={2}
-                sx={{ maxWidth: 400 }}
+                sx={{ maxWidth: 400, width: "100%" }}
                 onSubmit={handleSubmit(onMintGiftCard)}
               >
                 <RecipientTextField />
