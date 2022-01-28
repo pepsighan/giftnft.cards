@@ -153,7 +153,10 @@ export default function MintGiftCard() {
                   {...materialRegister(register, "amount")}
                   label="Amount"
                   fullWidth
-                  helperText={errors.amount?.message}
+                  helperText={
+                    errors.amount?.message ??
+                    "This is the amount that will be stored in the gift card."
+                  }
                   error={!!errors.amount}
                 />
                 <MintFee />
