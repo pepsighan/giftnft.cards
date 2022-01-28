@@ -85,7 +85,7 @@ export default function MintGiftCard() {
           imageDataUrl,
         });
         reset();
-        enqueueSnackbar("Minting a new gift card...", {
+        enqueueSnackbar("Successfully minted your gift card.", {
           variant: "success",
         });
       } catch (error: any) {
