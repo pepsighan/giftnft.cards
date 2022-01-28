@@ -48,24 +48,14 @@ export default forwardRef(function GenericGiftCard(_, ref) {
         sx={{ position: "absolute", bottom: 0, left: 0, width: "100%", p: 2 }}
       >
         {name && (
-          <>
-            <Typography
-              component="p"
-              variant="caption"
-              textAlign="center"
-              color="grey.300"
-            >
-              With Love
-            </Typography>
-            <Typography
-              variant="subtitle2"
-              textAlign="center"
-              color="white"
-              sx={{ mt: -0.5 }}
-            >
-              {name}
-            </Typography>
-          </>
+          <Typography
+            variant="subtitle2"
+            textAlign="center"
+            color="white"
+            sx={{ mt: -0.5 }}
+          >
+            {name}
+          </Typography>
         )}
         <Typography
           color="grey.500"
