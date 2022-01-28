@@ -66,28 +66,33 @@ export default function MintGiftCard() {
   const mintGiftCard = useMintGiftCard();
   const [{ loading }, onMintGiftCard] = useAsyncFn(
     async (state: SchemaType) => {
-      const canvas = await html2canvas(giftCardRef.current!, {
-        width: 300,
-        height: 400,
-        scale: 1,
-      });
-      const imageDataUrl = canvas.toDataURL("image/webp");
+      try {
+        const canvas = await html2canvas(giftCardRef.current!, {
+          width: 300,
+          height: 400,
+        });
+        const imageDataUrl = canvas.toDataURL("image/webp");
 
-      const giftAmount = calculateWei(state.amount);
-      const mintFee = calculateMintFee(giftAmount);
-      const totalAmount = giftAmount.plus(mintFee);
+        const giftAmount = calculateWei(state.amount);
+        const mintFee = calculateMintFee(giftAmount);
+        const totalAmount = giftAmount.plus(mintFee);
 
-      await mintGiftCard({
-        signedBy: state.name,
-        message: state.message,
-        amount: totalAmount.toString(),
-        recipient: state.recipient,
-        imageDataUrl,
-      });
-      reset();
-      enqueueSnackbar("Minting a new gift card...", {
-        variant: "success",
-      });
+        await mintGiftCard({
+          signedBy: state.name,
+          message: state.message,
+          amount: totalAmount.toString(),
+          recipient: state.recipient,
+          imageDataUrl,
+        });
+        reset();
+        enqueueSnackbar("Minting a new gift card...", {
+          variant: "success",
+        });
+      } catch (error: any) {
+        enqueueSnackbar(error.data?.message || "Failed to mint a gift card.", {
+          variant: "error",
+        });
+      }
     },
     [enqueueSnackbar, mintGiftCard, reset]
   );
