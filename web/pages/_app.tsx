@@ -22,8 +22,8 @@ export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <>
       <NextSeo
-        title="Gift NFT Cards"
-        description="Gift your loves ones this holiday season NFT Gift cards which wrap in crypto goodies inside."
+        title="Gift Card NFT"
+        description="Mint a custom made gift card as an NFT to send it to your friends and family."
       />
       <Head>
         <meta name="viewport" content="initial-scale=1, width=device-width" />

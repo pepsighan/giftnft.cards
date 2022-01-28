@@ -12,6 +12,11 @@ export function calculateWei(amount: string): BigNumber {
 const oneMetis = new BigNumber(10).pow(18);
 
 /**
+ * Minimum gift value is 0.1 Metis.
+ */
+export const minGiftValue = oneMetis.div(10);
+
+/**
  * Calculates the mint fees in Wei for the amount.
  * Fees are 5% capped at 1 $Metis.
  */

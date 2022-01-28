@@ -34,7 +34,8 @@ export default function MyGiftCard({ giftCard }: MyGiftCardProps) {
           <Button
             variant="contained"
             color="inherit"
-            sx={{ position: "absolute", left: 8, top: 8 }}
+            size="small"
+            sx={{ position: "absolute", left: 8, top: 8, opacity: 0.6 }}
             onClick={onOpen}
           >
             Unwrap Gift
@@ -45,10 +46,12 @@ export default function MyGiftCard({ giftCard }: MyGiftCardProps) {
           <Button
             variant="contained"
             color="inherit"
+            size="small"
             sx={{
               position: "absolute",
               left: 8,
               top: 8,
+              opacity: 0.6,
               "&.MuiButton-root.Mui-disabled": {
                 color: "grey.500",
                 bgcolor: "grey.300",
