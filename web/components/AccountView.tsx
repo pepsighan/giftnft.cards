@@ -3,9 +3,21 @@ import Navigation from "components/Navigation";
 import { Button, ButtonGroup } from "@mui/material";
 import { useCallback, useState } from "react";
 import MyGifts from "components/MyGifts";
+import { useAccount } from "store/account";
+import config from "utils/config";
+import InvalidChain from "components/InvalidChain";
 
 export default function AccountView() {
   const [tabIndex, setTabIndex] = useState(0);
+  const isValid = useAccount(
+    useCallback(
+      (state) =>
+        [config.MAINNET_CHAIN_ID, config.TESTNET_CHAIN_ID].includes(
+          state.chainId!
+        ),
+      []
+    )
+  );
 
   return (
     <>
@@ -26,7 +38,8 @@ export default function AccountView() {
         </ButtonGroup>
       </Navigation>
 
-      {tabIndex === 0 ? <MintGiftCard /> : <MyGifts />}
+      {isValid && <>{tabIndex === 0 ? <MintGiftCard /> : <MyGifts />}</>}
+      {!isValid && <InvalidChain />}
     </>
   );
 }
