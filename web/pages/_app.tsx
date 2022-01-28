@@ -1,5 +1,5 @@
 import type { AppProps } from "next/app";
-import { Chip, CssBaseline, ThemeProvider } from "@mui/material";
+import { CssBaseline, ThemeProvider } from "@mui/material";
 import { NextSeo } from "next-seo";
 import theme from "utils/theme";
 import Head from "next/head";
@@ -37,11 +37,6 @@ export default function MyApp({ Component, pageProps }: AppProps) {
             <Component {...pageProps} />
           </SnackbarProvider>
           <InvalidChainNotifier />
-
-          <Chip
-            label="Test Mode"
-            sx={{ position: "fixed", top: 16, left: 16, color: "grey.500" }}
-          />
         </ThemeProvider>
       </QueryClientProvider>
     </>
