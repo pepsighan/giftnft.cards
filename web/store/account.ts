@@ -4,6 +4,7 @@ import { useAsync } from "react-use";
 import { getMetamask } from "utils/metamask";
 
 type UseAccountStore = {
+  network: "mainnet" | "testnet";
   accountId: string | null;
   chainId: number | null;
 };
@@ -12,6 +13,7 @@ type UseAccountStore = {
  * Stores the current account information in the wallet accessible to the app.
  */
 export const useAccount = create<UseAccountStore>(() => ({
+  network: "testnet",
   accountId: null,
   chainId: null,
 }));

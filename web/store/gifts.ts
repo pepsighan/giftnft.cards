@@ -157,6 +157,8 @@ export function useUnwrapGift() {
         return;
       }
 
+      const network = useAccount.getState().network;
+
       // This will let the backend know if the unwrap request is from the owner itself.
       const signer = eths.getSigner();
       const owner = await signer.getAddress();
@@ -164,7 +166,7 @@ export function useUnwrapGift() {
         `Token ID: ${tokenId}\nOwner: ${owner}`
       );
 
-      await axios.post("/api/unwrap", {
+      await axios.post(`/api/${network}/unwrap`, {
         tokenId,
         owner,
         signature,
@@ -184,11 +186,13 @@ export function useUnwrapGift() {
  */
 export function useUnwrapFee(tokenId: string, enabled: boolean) {
   const accountId = useAccount(useCallback((state) => state.accountId, []));
+  const network = useAccount(useCallback((state) => state.network, []));
+
   return useQuery(
     `unwrap-fee-${tokenId}-${accountId}`,
     () =>
       axios
-        .get(`/api/unwrap-fee?tokenId=${tokenId}&owner=${accountId}`)
+        .get(`/api/${network}/unwrap-fee?tokenId=${tokenId}&owner=${accountId}`)
         .then((response) => response.data),
     // Refetch every 10 seconds.
     { refetchInterval: 10_000, enabled }
