@@ -1,4 +1,3 @@
-import MintGiftCard from "components/MintGiftCards";
 import Navigation from "components/Navigation";
 import { Button, ButtonGroup } from "@mui/material";
 import { useCallback, useState } from "react";
@@ -6,8 +5,9 @@ import MyGifts from "components/MyGifts";
 import { useAccount } from "store/account";
 import config from "utils/config";
 import InvalidChain from "components/InvalidChain";
+import Link from "next/link";
 
-export default function AccountView() {
+export default function MyGiftsView() {
   const [tabIndex, setTabIndex] = useState(0);
   const isValid = useAccount(
     useCallback(
@@ -23,23 +23,20 @@ export default function AccountView() {
     <>
       <Navigation>
         <ButtonGroup>
-          <Button
-            variant={tabIndex === 0 ? "contained" : "outlined"}
-            onClick={useCallback(() => setTabIndex(0), [])}
-          >
-            Mint a Gift Card
-          </Button>
-          <Button
-            variant={tabIndex === 1 ? "contained" : "outlined"}
-            onClick={useCallback(() => setTabIndex(1), [])}
-          >
-            My Gift Cards
-          </Button>
+          <Link href="/" passHref>
+            <Button component="a" variant="outlined">
+              Mint a Gift Card
+            </Button>
+          </Link>
+          <Link href="/my-gifts" passHref>
+            <Button component="a" variant="contained">
+              My Gift Cards
+            </Button>
+          </Link>
         </ButtonGroup>
       </Navigation>
 
-      {isValid && <>{tabIndex === 0 ? <MintGiftCard /> : <MyGifts />}</>}
-      {!isValid && <InvalidChain />}
+      {isValid ? <MyGifts /> : <InvalidChain />}
     </>
   );
 }
