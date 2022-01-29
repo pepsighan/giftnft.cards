@@ -86,7 +86,7 @@ contract GiftNFTCard is
         uint256 minValue = minGiftValue + minMintFee;
 
         require(
-            msg.value > minValue,
+            msg.value >= minValue,
             "GiftNFTCard: gift card needs to have at least 0.1 Metis + mint fees"
         );
 
