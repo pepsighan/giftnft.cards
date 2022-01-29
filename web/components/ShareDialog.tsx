@@ -37,7 +37,7 @@ export default function ShareDialog({
     open
   );
 
-  const url = "https://giftnft.cards/";
+  const url = "https://giftnft.cards/my-gifts";
   const message = `I have sent a Gift Card NFT to your wallet (${owner}).\nTo access and unwrap your gift, open the Gift Card NFT app.`;
 
   return (
