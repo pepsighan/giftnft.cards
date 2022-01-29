@@ -21,7 +21,9 @@ export default function MyGiftCard({ giftCard }: MyGiftCardProps) {
           height: 400 / 1.2,
           mb: 2,
           position: "relative",
+          cursor: !giftCard.isUnwrapped ? "pointer" : "inherit",
         }}
+        onClick={!giftCard.isUnwrapped ? onOpen : undefined}
       >
         <Box
           component="img"
