@@ -86,7 +86,7 @@ contract GiftNFTCard is
         uint256 minValue = minGiftValue + minMintFee;
 
         require(
-            msg.value > minValue,
+            msg.value >= minValue,
             "GiftNFTCard: gift card needs to have at least 0.1 Metis + mint fees"
         );
 
@@ -189,18 +189,19 @@ contract GiftNFTCard is
     function _unwrapGiftCardAndDisburse(GiftCard memory gift, address owner)
         private
     {
+        uint256 giftAmount = gift.amount;
         require(
             gift.isUnwrapped == false,
             "GiftNFTCard: cannot unwrap already unwrapped gift card"
         );
+        // The gift is unwrapped now. Do not allow the same gift to redeem the amount again.
+        _giftMap[gift.tokenId].isUnwrapped = true;
+        _giftMap[gift.tokenId].amount = 0;
 
         address payable sender = payable(owner);
         // Send the gift amount to the caller.
-        (bool sent, ) = sender.call{value: gift.amount}("");
+        (bool sent, ) = sender.call{value: giftAmount}("");
         require(sent, "GiftNFTCard: failed to unwrap gift card");
-
-        // The gift is unwrapped now. Do not allow the same gift to redeem the amount again.
-        _giftMap[gift.tokenId].isUnwrapped = true;
     }
 
     /// Unwraps the amount stored in the gift card and withdraws it in the owner's wallet.
@@ -253,12 +254,11 @@ contract GiftNFTCard is
     function withdrawFees() public onlyOwner {
         uint256 unwithdrawnFees = _totalFees - _totalFeesWithdrawn;
         require(unwithdrawnFees > 0, "GiftNFTCard: no fees to withdraw yet");
+        // Reset the withdrawn amount to full.
+        _totalFeesWithdrawn = _totalFees;
 
         (bool sent, ) = payable(msg.sender).call{value: unwithdrawnFees}("");
         require(sent, "GiftNFTCard: failed to withdraw fees");
-
-        // Reset the withdrawn amount to full.
-        _totalFeesWithdrawn = _totalFees;
     }
 
     /// Recover the owner of the gift card from the signature.
