@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { ethers } from "ethers";
 import config, { getMetisNetworkConfig } from "utils/config";
 import { convertGiftCardTupleToObject } from "utils/conversion";
+import { withSentry } from "@sentry/nextjs";
 
 /**
  * Get address of the wallet from signature.
@@ -22,10 +23,7 @@ function getAddressFromSignature(
  * Unwrap the gift card using the admin account itself so that the user does not have to pay for
  * the transaction.
  */
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse
-) {
+async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") {
     return res.status(404).send({
       message: "Not found",
@@ -127,3 +125,5 @@ export default async function handler(
     });
   }
 }
+
+export default withSentry(handler);
