@@ -2,6 +2,7 @@ import { AppBar, Box, Button, Toolbar } from "@mui/material";
 import { useAccount } from "store/account";
 import { ReactNode, useCallback } from "react";
 import MetamaskIcon from "components/MetamaskIcon";
+import { AiFillGithub } from "react-icons/ai";
 
 type NavigationProps = {
   children: ReactNode;
@@ -21,6 +22,24 @@ export default function Navigation({ children }: NavigationProps) {
       }}
     >
       <Toolbar sx={{ justifyContent: "center" }}>
+        <Button
+          component="a"
+          href="https://github.com/pepsighan/giftnft.cards"
+          target="_blank"
+          rel="noopener noreferrer"
+          color="inherit"
+          sx={{
+            position: "absolute",
+            left: 24,
+            display: { xs: "none", md: "flex" },
+          }}
+        >
+          <Box sx={{ width: 18, height: 18, mr: 1 }}>
+            <AiFillGithub size={18} />
+          </Box>
+          GitHub
+        </Button>
+
         {children}
 
         {accountId && (
