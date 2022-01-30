@@ -14,7 +14,7 @@ type UseAccountStore = {
  * Stores the current account information in the wallet accessible to the app.
  */
 export const useAccount = create<UseAccountStore>(() => ({
-  network: "testnet",
+  network: "mainnet",
   accountId: null,
   chainId: null,
 }));
