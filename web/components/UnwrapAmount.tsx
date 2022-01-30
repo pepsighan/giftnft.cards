@@ -7,9 +7,14 @@ import { ethers } from "ethers";
 type UnwrapAmountProps = {
   txFee: ethers.BigNumber | null;
   giftCard: GiftCard;
+  isMessage?: boolean;
 };
 
-export default function UnwrapAmount({ giftCard, txFee }: UnwrapAmountProps) {
+export default function UnwrapAmount({
+  giftCard,
+  txFee,
+  isMessage,
+}: UnwrapAmountProps) {
   const withdrawAmount = txFee ? giftCard.amount.sub(txFee) : giftCard.amount;
 
   return (
@@ -81,10 +86,12 @@ export default function UnwrapAmount({ giftCard, txFee }: UnwrapAmountProps) {
         </Grid>
       </Paper>
 
-      <Typography variant="caption" color="textSecondary" sx={{ mt: 1 }}>
-        Actual transaction fee may differ based on various factors such as gas
-        prices and gas limit.
-      </Typography>
+      {isMessage && (
+        <Typography variant="caption" color="textSecondary" sx={{ mt: 1 }}>
+          Actual transaction fee may differ based on various factors such as gas
+          prices and gas limit.
+        </Typography>
+      )}
     </>
   );
 }
