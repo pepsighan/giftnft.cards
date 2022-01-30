@@ -1,6 +1,6 @@
 import Navigation from "components/Navigation";
 import { Button, ButtonGroup } from "@mui/material";
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import MyGifts from "components/MyGifts";
 import { useAccount } from "store/account";
 import config from "utils/config";
@@ -8,7 +8,6 @@ import InvalidChain from "components/InvalidChain";
 import Link from "next/link";
 
 export default function MyGiftsView() {
-  const [tabIndex, setTabIndex] = useState(0);
   const isValid = useAccount(
     useCallback(
       (state) =>
