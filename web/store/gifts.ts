@@ -5,6 +5,9 @@ import { getContract, getEthers } from "utils/metamask";
 import { ethers } from "ethers";
 import { convertGiftCardTupleToObject } from "utils/conversion";
 import axios from "axios";
+import { getStorage, ref, StringFormat, uploadString } from "@firebase/storage";
+import { firebaseApp } from "utils/firebase";
+import { v4 as uuidv4 } from "uuid";
 
 export type GiftCard = {
   tokenId: ethers.BigNumber;
@@ -123,9 +126,16 @@ export function useMintGiftCard() {
       if (!contract) {
         return;
       }
+
+      // Upload the image to firebase storage and store it in the gift card nft.
+      const storage = getStorage(firebaseApp);
+      const filepath = `cards/${uuidv4()}`;
+      const imageRef = ref(storage, filepath);
+      await uploadString(imageRef, arg.imageDataUrl, StringFormat.DATA_URL);
+
       const tx = await contract.safeMint(
         arg.recipient,
-        arg.imageDataUrl,
+        filepath,
         arg.message,
         arg.signedBy,
         // Send the following amount to be wrapped in the gift card.

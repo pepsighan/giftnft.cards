@@ -17,10 +17,16 @@ export function convertGiftCardTupleToObject(tuple: any[]): GiftCard {
     isInitialized,
   ] = tuple;
 
+  let url: string = imageDataUrl;
+  // This is an image stored in firebase storage.
+  if (imageDataUrl.startsWith("cards/")) {
+    url = `https://storage.googleapis.com/giftnftcards.appspot.com/${imageDataUrl}`;
+  }
+
   return {
     tokenId,
     amount,
-    imageDataUrl,
+    imageDataUrl: url,
     message,
     signedBy,
     mintedBy,
