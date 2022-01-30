@@ -36,35 +36,39 @@ export default function Navigation({ children }: NavigationProps) {
         borderColor: "grey.300",
       }}
     >
-      <Toolbar sx={{ justifyContent: "center" }}>
-        <Button
-          component="a"
-          href="https://github.com/pepsighan/giftnft.cards"
-          target="_blank"
-          rel="noopener noreferrer"
-          color="inherit"
+      <Toolbar sx={{ justifyContent: { xs: "center", md: "space-between" } }}>
+        <Stack
+          flex={1}
+          alignItems="flex-start"
           sx={{
-            position: "absolute",
-            left: 24,
             display: { xs: "none", md: "flex" },
           }}
         >
-          <Box sx={{ width: 18, height: 18, mr: 1 }}>
-            <AiFillGithub size={18} />
-          </Box>
-          GitHub
-        </Button>
+          <Button
+            component="a"
+            href="https://github.com/pepsighan/giftnft.cards"
+            target="_blank"
+            rel="noopener noreferrer"
+            color="inherit"
+          >
+            <Box sx={{ width: 18, height: 18, mr: 1 }}>
+              <AiFillGithub size={18} />
+            </Box>
+            GitHub
+          </Button>
+        </Stack>
 
         {children}
 
         {accountId && (
           <Stack
             direction="row"
+            justifyContent="flex-end"
             alignItems="center"
             spacing={2}
+            flex={1}
             sx={{
-              position: "absolute",
-              right: 24,
+              display: { xs: "none", md: "flex" },
             }}
           >
             <Select size="small" value={network} onChange={onNetworkChange}>
@@ -72,11 +76,7 @@ export default function Navigation({ children }: NavigationProps) {
               <MenuItem value="testnet">Stardust Testnet</MenuItem>
             </Select>
 
-            <Button
-              sx={{
-                display: { xs: "none", md: "flex" },
-              }}
-            >
+            <Button>
               <Box sx={{ width: 18, height: 18, mr: 2 }}>
                 <MetamaskIcon />
               </Box>
