@@ -1,4 +1,5 @@
 import { initializeApp } from "firebase/app";
+import { getAuth, signInAnonymously } from "@firebase/auth";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBR1Bsyyg7eByNaNyzLJnpt9hhfxHxhmjo",
@@ -10,3 +11,10 @@ const firebaseConfig = {
 };
 
 export const firebaseApp = initializeApp(firebaseConfig);
+
+// Login to the app anonymously immediately. Only logged in
+// user can upload images.
+const auth = getAuth(firebaseApp);
+signInAnonymously(auth).catch((error) => {
+  console.log(error);
+});
