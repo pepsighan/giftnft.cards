@@ -40,7 +40,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       </Head>
 
       <CssBaseline />
-      <QueryClientProvider key={accountKey} client={queryClient}>
+      <QueryClientProvider client={queryClient}>
         <ThemeProvider theme={theme}>
           <SnackbarProvider>
             <Component {...pageProps} />
