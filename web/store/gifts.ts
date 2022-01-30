@@ -145,7 +145,6 @@ export function useMintGiftCard() {
 
 /**
  * Unwraps the gift card and draws the value stored in it to the withholding account.
- * This does not however burn the token.
  */
 export function useUnwrapGift() {
   const client = useQueryClient();
@@ -171,6 +170,31 @@ export function useUnwrapGift() {
         owner,
         signature,
       });
+      // Refetch the gifts.
+      await Promise.all([
+        client.invalidateQueries("use-my-gifts"),
+        client.invalidateQueries("use-sent-gifts"),
+      ]);
+    },
+    [client]
+  );
+}
+
+/**
+ * Unwraps the gift card and draws the value stored in it to the withholding account. The
+ * transaction is executed by the caller.
+ */
+export function useUnwrapGiftBySelf() {
+  const client = useQueryClient();
+
+  return useCallback(
+    async (tokenId: string) => {
+      const contract = await getContract();
+      if (!contract) {
+        return;
+      }
+      await contract.unwrapGiftCard(tokenId);
+
       // Refetch the gifts.
       await Promise.all([
         client.invalidateQueries("use-my-gifts"),

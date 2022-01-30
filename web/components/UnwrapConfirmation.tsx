@@ -5,11 +5,15 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  Paper,
   Stack,
   Typography,
 } from "@mui/material";
-import { GiftCard, useUnwrapFee, useUnwrapGift } from "store/gifts";
+import {
+  GiftCard,
+  useUnwrapFee,
+  useUnwrapGift,
+  useUnwrapGiftBySelf,
+} from "store/gifts";
 import { useAsyncFn } from "react-use";
 import { LoadingButton } from "@mui/lab";
 import UnwrapAmount from "components/UnwrapAmount";
@@ -30,11 +34,28 @@ export default function UnwrapConfirmation({
 }: UnwrapConfirmationProps) {
   const [isGasless, setIsGasless] = useState(true);
 
-  const unwrapGift = useUnwrapGift();
   const { enqueueSnackbar } = useSnackbar();
 
-  const onUnwrap = useCallback(() => {}, []);
+  const unwrapGiftBySelf = useUnwrapGiftBySelf();
+  const [{ loading: unwrappingSelf }, onUnwrapGiftBySelf] =
+    useAsyncFn(async () => {
+      try {
+        await unwrapGiftBySelf(giftCard.tokenId.toString());
+        enqueueSnackbar("Unwrapping your gift card...", {
+          variant: "success",
+        });
+        onClose();
+      } catch (error: any) {
+        enqueueSnackbar(
+          error.data?.message || "Failed to unwrap your gift card.",
+          {
+            variant: "error",
+          }
+        );
+      }
+    }, [giftCard.tokenId, unwrapGiftBySelf]);
 
+  const unwrapGift = useUnwrapGift();
   const [{ loading: unwrapping }, onGaslessUnwrap] = useAsyncFn(async () => {
     try {
       await unwrapGift(giftCard.tokenId.toString());
@@ -143,8 +164,8 @@ export default function UnwrapConfirmation({
         {!isGasless && (
           <LoadingButton
             variant="contained"
-            onClick={onUnwrap}
-            loading={unwrapping}
+            onClick={onUnwrapGiftBySelf}
+            loading={unwrappingSelf}
           >
             Unwrap
           </LoadingButton>
