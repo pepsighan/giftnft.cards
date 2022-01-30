@@ -2,6 +2,7 @@ import create from "zustand";
 import { useCallback, useEffect } from "react";
 import { useAsync } from "react-use";
 import { getMetamask } from "utils/metamask";
+import config from "utils/config";
 
 type UseAccountStore = {
   network: "mainnet" | "testnet";
@@ -41,15 +42,23 @@ export function useInitializeAccount() {
     };
 
     const onChainChanged = (chainId: number | string) => {
+      let newChainId: number;
+
       if (typeof chainId === "string") {
         // Expecting hex-number.
-        useAccount.setState({
-          chainId: Number(chainId),
-        });
-        return;
+        newChainId = Number(chainId);
+      } else {
+        newChainId = chainId;
       }
 
-      useAccount.setState({ chainId });
+      // Also, switch the network kind.
+      if (newChainId === config.MAINNET_CHAIN_ID) {
+        useAccount.setState({ network: "mainnet" });
+      } else if (newChainId === config.TESTNET_CHAIN_ID) {
+        useAccount.setState({ network: "testnet" });
+      }
+
+      useAccount.setState({ chainId: newChainId });
     };
 
     // Fetch the account and chain ID when the app is loaded for the first time.
