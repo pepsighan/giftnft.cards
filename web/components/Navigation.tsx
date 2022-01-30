@@ -1,4 +1,12 @@
-import { AppBar, Box, Button, Toolbar } from "@mui/material";
+import {
+  AppBar,
+  Box,
+  Button,
+  MenuItem,
+  Select,
+  Stack,
+  Toolbar,
+} from "@mui/material";
 import { useAccount } from "store/account";
 import { ReactNode, useCallback } from "react";
 import MetamaskIcon from "components/MetamaskIcon";
@@ -10,6 +18,13 @@ type NavigationProps = {
 
 export default function Navigation({ children }: NavigationProps) {
   const accountId = useAccount(useCallback((state) => state.accountId, []));
+  const network = useAccount(useCallback((state) => state.network, []));
+
+  const onNetworkChange = useCallback((ev) => {
+    useAccount.setState({
+      network: ev.target.value,
+    });
+  }, []);
 
   return (
     <AppBar
@@ -43,19 +58,32 @@ export default function Navigation({ children }: NavigationProps) {
         {children}
 
         {accountId && (
-          <Button
+          <Stack
+            direction="row"
+            alignItems="center"
+            spacing={2}
             sx={{
               position: "absolute",
               right: 24,
-              display: { xs: "none", md: "flex" },
             }}
           >
-            <Box sx={{ width: 18, height: 18, mr: 2 }}>
-              <MetamaskIcon />
-            </Box>
-            {accountId.substring(0, 6)}...
-            {accountId.substring(accountId.length - 4)}
-          </Button>
+            <Select size="small" value={network} onChange={onNetworkChange}>
+              <MenuItem value="mainnet">Andromeda Mainnet</MenuItem>
+              <MenuItem value="testnet">Stardust Testnet</MenuItem>
+            </Select>
+
+            <Button
+              sx={{
+                display: { xs: "none", md: "flex" },
+              }}
+            >
+              <Box sx={{ width: 18, height: 18, mr: 2 }}>
+                <MetamaskIcon />
+              </Box>
+              {accountId.substring(0, 6)}...
+              {accountId.substring(accountId.length - 4)}
+            </Button>
+          </Stack>
         )}
       </Toolbar>
     </AppBar>
