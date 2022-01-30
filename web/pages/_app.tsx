@@ -3,9 +3,10 @@ import { CssBaseline, ThemeProvider } from "@mui/material";
 import { NextSeo } from "next-seo";
 import theme from "utils/theme";
 import Head from "next/head";
-import { useInitializeAccount } from "store/account";
+import { useAccount, useInitializeAccount } from "store/account";
 import { QueryClient, QueryClientProvider } from "react-query";
 import { SnackbarProvider } from "notistack";
+import { useCallback, useEffect } from "react";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -19,6 +20,15 @@ const queryClient = new QueryClient({
 export default function MyApp({ Component, pageProps }: AppProps) {
   useInitializeAccount();
 
+  const accountKey = useAccount(
+    useCallback((state) => `${state.chainId}-${state.accountId}`, [])
+  );
+
+  // Reset all the fetched queries again when the account changes.
+  useEffect(() => {
+    queryClient.resetQueries();
+  }, [accountKey]);
+
   return (
     <>
       <NextSeo
@@ -30,7 +40,7 @@ export default function MyApp({ Component, pageProps }: AppProps) {
       </Head>
 
       <CssBaseline />
-      <QueryClientProvider client={queryClient}>
+      <QueryClientProvider key={accountKey} client={queryClient}>
         <ThemeProvider theme={theme}>
           <SnackbarProvider>
             <Component {...pageProps} />
