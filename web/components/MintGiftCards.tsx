@@ -21,11 +21,12 @@ import RecipientTextField from "components/RecipientTextField";
 import { useAsyncFn } from "react-use";
 import { calculateMintFee, calculateWei, minGiftValue } from "utils/metis";
 import MintFee from "components/MintFee";
-import ChineseNewYear from "components/cards/ChineseNewYear";
+import ChineseNewYearCard from "components/cards/ChineseNewYearCard";
 import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import GenericGiftCard from "components/cards/GenericGiftCard";
+import CupidCard from "components/cards/CupidCard";
 
-const giftCards = [GenericGiftCard, ChineseNewYear];
+const giftCards = [GenericGiftCard, ChineseNewYearCard, CupidCard];
 
 const schema = z
   .object({
