@@ -1,4 +1,4 @@
-import { Box, Paper } from "@mui/material";
+import { Box } from "@mui/material";
 import { GiftCard } from "store/gifts";
 import { useBoolean } from "react-use";
 import { useCallback } from "react";
@@ -18,7 +18,7 @@ export default function SentGiftCard({ giftCard }: SentGiftCardProps) {
 
   return (
     <>
-      <Paper
+      <Box
         sx={{
           width: { xs: 300 / 2, md: 300 / 1.5 },
           height: { xs: 400 / 2, md: 400 / 1.5 },
@@ -36,7 +36,7 @@ export default function SentGiftCard({ giftCard }: SentGiftCardProps) {
             height: { xs: 400 / 2, md: 400 / 1.5 },
           }}
         />
-      </Paper>
+      </Box>
 
       <ShareDialog open={open} onClose={onClose} giftCard={giftCard} />
     </>
