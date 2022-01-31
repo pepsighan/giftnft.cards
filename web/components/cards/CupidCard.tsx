@@ -3,9 +3,9 @@ import { forwardRef, useCallback } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 import { useAccount } from "store/account";
 import { formatAmount } from "utils/metis";
-import chineseNewYear from "assets/chinese-new-year.png";
+import cupid from "assets/cupid.png";
 
-export default forwardRef(function ChineseNewYear(_, ref) {
+export default forwardRef(function CupidCard(_, ref) {
   const { control } = useFormContext();
   const message = useWatch({ control, name: "message" });
   const name = useWatch({ control, name: "name" });
@@ -27,7 +27,7 @@ export default forwardRef(function ChineseNewYear(_, ref) {
       }}
     >
       <Box sx={{ position: "absolute", top: 0, left: 0, zIndex: -10 }}>
-        <img src={chineseNewYear.src} width={300} height={400} />
+        <img src={cupid.src} width={301} height={400} />
       </Box>
       <Box
         sx={{
@@ -35,8 +35,8 @@ export default forwardRef(function ChineseNewYear(_, ref) {
           top: 0,
           right: 0,
           width: "100%",
-          py: 2,
-          px: 3,
+          py: 1,
+          px: 1.5,
         }}
       >
         <Typography variant="h6" color="white" textAlign="right">
@@ -46,7 +46,6 @@ export default forwardRef(function ChineseNewYear(_, ref) {
 
       <Typography
         variant="h4"
-        color="white"
         textAlign="center"
         sx={{ fontFamily: "'The Nautigal', cursive", px: 4 }}
       >
@@ -55,17 +54,12 @@ export default forwardRef(function ChineseNewYear(_, ref) {
 
       <Box sx={{ width: "100%", p: 1 }}>
         {name && (
-          <Typography
-            variant="subtitle2"
-            textAlign="center"
-            color="white"
-            sx={{ mt: -0.5 }}
-          >
+          <Typography variant="subtitle2" textAlign="center" sx={{ mt: -0.5 }}>
             {name}
           </Typography>
         )}
         <Typography
-          color="grey.100"
+          color="grey.500"
           textAlign="center"
           sx={{ fontSize: ".5rem" }}
         >
