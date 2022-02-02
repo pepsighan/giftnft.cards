@@ -9,13 +9,13 @@ import Link from "next/link";
 
 export default function MintView() {
   const isValid = useAccount(
-    useCallback(
-      (state) =>
-        [config.MAINNET_CHAIN_ID, config.TESTNET_CHAIN_ID].includes(
-          state.chainId!
-        ),
-      []
-    )
+    useCallback((state) => {
+      const validChainId =
+        state.network === "mainnet"
+          ? config.MAINNET_CHAIN_ID
+          : config.TESTNET_CHAIN_ID;
+      return validChainId === state.chainId;
+    }, [])
   );
 
   return (
