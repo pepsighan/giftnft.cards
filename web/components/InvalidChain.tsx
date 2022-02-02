@@ -31,9 +31,11 @@ export default function InvalidChain() {
       }}
     >
       <MdSwitchRight size={80} />
-      <Typography>You are not connected to Metis {networkName}.</Typography>
+      <Typography textAlign="center">
+        You are not connected to Metis {networkName}.
+      </Typography>
 
-      <Stack direction="row" spacing={2} sx={{ mt: 4 }}>
+      <Stack direction={{ xs: "column", md: "row" }} spacing={2} sx={{ mt: 4 }}>
         <Button variant="outlined" onClick={onAddNetwork}>
           Add Metis {networkName}
         </Button>
