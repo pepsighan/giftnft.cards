@@ -1,22 +1,14 @@
-import { Button, Container, Typography } from "@mui/material";
+import { Button, Container, Stack, Typography } from "@mui/material";
 import { MdSwitchRight } from "react-icons/md";
 import { useCallback } from "react";
-import { getMetamask } from "utils/metamask";
 import { useAccount } from "store/account";
-import config from "utils/config";
+import { useAddNetwork, useSwitchNetwork } from "store/chain";
 
 export default function InvalidChain() {
-  const onSwitch = useCallback(async () => {
-    const network = useAccount.getState().network;
-    const chainId =
-      network === "mainnet" ? config.MAINNET_CHAIN_ID : config.TESTNET_CHAIN_ID;
+  const network = useAccount(useCallback((state) => state.network, []));
 
-    const metamask = await getMetamask();
-    await metamask.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: "0x" + chainId.toString(16) }],
-    });
-  }, []);
+  const onAddNetwork = useAddNetwork();
+  const onSwitch = useSwitchNetwork();
 
   return (
     <Container
@@ -29,10 +21,20 @@ export default function InvalidChain() {
       }}
     >
       <MdSwitchRight size={80} />
-      <Typography>You are not connected to Metis Blockchain.</Typography>
-      <Button variant="contained" sx={{ mt: 4 }} onClick={onSwitch}>
-        Switch Network
-      </Button>
+      <Typography>
+        You are not connected to Metis{" "}
+        {network === "mainnet" ? "Andromeda Mainnet" : "Stardust Testnet"}.
+      </Typography>
+
+      <Stack direction="row" spacing={2} sx={{ mt: 4 }}>
+        <Button variant="outlined" onClick={onAddNetwork}>
+          Add Metis{" "}
+          {network === "mainnet" ? "Andromeda Mainnet" : "Stardust Testnet"}
+        </Button>
+        <Button variant="contained" onClick={onSwitch}>
+          Switch Network
+        </Button>
+      </Stack>
     </Container>
   );
 }

@@ -13,6 +13,7 @@ import MetamaskIcon from "components/MetamaskIcon";
 import { AiFillGithub } from "react-icons/ai";
 import config from "utils/config";
 import { getMetamask } from "utils/metamask";
+import { useAddNetwork } from "store/chain";
 
 type NavigationProps = {
   children: ReactNode;
@@ -22,21 +23,37 @@ export default function Navigation({ children }: NavigationProps) {
   const accountId = useAccount(useCallback((state) => state.accountId, []));
   const network = useAccount(useCallback((state) => state.network, []));
 
+  const onAddNetwork = useAddNetwork();
   // Change the network in metamask and store it.
-  const onNetworkChange = useCallback(async (ev) => {
-    const network = ev.target.value;
+  const onNetworkChange = useCallback(
+    async (ev) => {
+      const network = ev.target.value;
 
-    const chainId =
-      network === "mainnet" ? config.MAINNET_CHAIN_ID : config.TESTNET_CHAIN_ID;
-    const metamask = await getMetamask();
-    await metamask.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: "0x" + chainId.toString(16) }],
-    });
-    useAccount.setState({
-      network,
-    });
-  }, []);
+      const chainId =
+        network === "mainnet"
+          ? config.MAINNET_CHAIN_ID
+          : config.TESTNET_CHAIN_ID;
+      const metamask = await getMetamask();
+
+      // Try switching in the network in metamask. If it fails, it probably means the network does not exist.
+      try {
+        await metamask.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: "0x" + chainId.toString(16) }],
+        });
+      } catch (err: any) {
+        // Add the network if it does not exist.
+        if (err.code === 4902) {
+          await onAddNetwork();
+        }
+      } finally {
+        useAccount.setState({
+          network,
+        });
+      }
+    },
+    [onAddNetwork]
+  );
 
   return (
     <AppBar
