@@ -26,7 +26,12 @@ export default function ConnectWallet() {
   }
 
   return (
-    <Button onClick={onRequest} variant="contained" size="large" sx={{ mt: 2 }}>
+    <Button
+      onClick={onRequest}
+      variant="contained"
+      size="large"
+      sx={{ mt: 2, mb: 12 }}
+    >
       <Box sx={{ width: 28, height: 28, mr: 2 }}>
         <MetamaskIcon />
       </Box>
