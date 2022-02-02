@@ -12,31 +12,30 @@ export function useAddNetwork() {
     const chainId =
       network === "mainnet" ? config.MAINNET_CHAIN_ID : config.TESTNET_CHAIN_ID;
 
+    const mainnet = {
+      chainName: "Metis Andromeda Mainnet",
+      rpcUrls: ["https://andromeda.metis.io/?owner=1088"],
+      blockExplorerUrls: ["https://andromeda-explorer.metis.io/"],
+    };
+
+    const testnet = {
+      chainName: "Metis Stardust Testnet",
+      rpcUrls: ["https://stardust.metis.io/?owner=588"],
+      blockExplorerUrls: ["https://stardust-explorer.metis.io/"],
+    };
+
     const metamask = await getMetamask();
     await metamask.request({
       method: "wallet_addEthereumChain",
       params: [
         {
           chainId: "0x" + chainId.toString(16),
-          chainName:
-            network === "mainnet"
-              ? "Metis Andromeda Mainnet"
-              : "Metis Stardust Testnet",
           nativeCurrency: {
             name: "Metis",
             symbol: "METIS",
             decimals: 18,
           },
-          rpcUrls: [
-            network === "mainnet"
-              ? "https://andromeda.metis.io/?owner=1088"
-              : "https://stardust.metis.io/?owner=588",
-          ],
-          blockExplorerUrls: [
-            network === "mainnet"
-              ? "https://andromeda-explorer.metis.io/"
-              : "https://stardust-explorer.metis.io/",
-          ],
+          ...(network === "mainnet" ? mainnet : testnet),
         },
       ],
     });
