@@ -29,13 +29,18 @@ export default function Navigation({ children }: NavigationProps) {
     const chainId =
       network === "mainnet" ? config.MAINNET_CHAIN_ID : config.TESTNET_CHAIN_ID;
     const metamask = await getMetamask();
-    await metamask.request({
-      method: "wallet_switchEthereumChain",
-      params: [{ chainId: "0x" + chainId.toString(16) }],
-    });
-    useAccount.setState({
-      network,
-    });
+
+    // Try switching in the network in metamask. If it fails, it probably means the network does not exist.
+    try {
+      await metamask.request({
+        method: "wallet_switchEthereumChain",
+        params: [{ chainId: "0x" + chainId.toString(16) }],
+      });
+    } finally {
+      useAccount.setState({
+        network,
+      });
+    }
   }, []);
 
   return (
