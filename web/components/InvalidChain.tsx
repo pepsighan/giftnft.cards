@@ -1,4 +1,11 @@
-import { Button, Container, Stack, Typography } from "@mui/material";
+import {
+  Button,
+  Container,
+  Link,
+  Paper,
+  Stack,
+  Typography,
+} from "@mui/material";
 import { MdSwitchRight } from "react-icons/md";
 import { useCallback } from "react";
 import { useAccount } from "store/account";
@@ -9,6 +16,9 @@ export default function InvalidChain() {
 
   const onAddNetwork = useAddNetwork();
   const onSwitch = useSwitchNetwork();
+
+  const networkName =
+    network === "mainnet" ? "Andromeda Mainnet" : "Stardust Testnet";
 
   return (
     <Container
@@ -21,20 +31,37 @@ export default function InvalidChain() {
       }}
     >
       <MdSwitchRight size={80} />
-      <Typography>
-        You are not connected to Metis{" "}
-        {network === "mainnet" ? "Andromeda Mainnet" : "Stardust Testnet"}.
-      </Typography>
+      <Typography>You are not connected to Metis {networkName}.</Typography>
 
       <Stack direction="row" spacing={2} sx={{ mt: 4 }}>
         <Button variant="outlined" onClick={onAddNetwork}>
-          Add Metis{" "}
-          {network === "mainnet" ? "Andromeda Mainnet" : "Stardust Testnet"}
+          Add Metis {networkName}
         </Button>
         <Button variant="contained" onClick={onSwitch}>
           Switch Network
         </Button>
       </Stack>
+
+      <Paper
+        variant="outlined"
+        sx={{ p: 3, mt: 4, maxWidth: 500, bgcolor: "grey.50" }}
+      >
+        <Typography variant="body2" textAlign="center">
+          If you have not added Metis {networkName} to your Metamask, you can do
+          so by clicking on <b>Add Metis {networkName}</b> button.
+        </Typography>
+        <Typography variant="body2" textAlign="center" sx={{ mt: 2 }}>
+          Or you may choose to add the network on{" "}
+          <Link
+            href="https://chainlist.org"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            chainlist.org
+          </Link>
+          .
+        </Typography>
+      </Paper>
     </Container>
   );
 }
