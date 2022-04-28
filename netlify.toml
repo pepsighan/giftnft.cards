@@ -1,0 +1,6 @@
+[build]
+base = "web"
+publish = ".next"
+
+[plugins]
+package = "@netlify/plugin-nextjs"
