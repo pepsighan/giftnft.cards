@@ -3,7 +3,7 @@ import {
   FieldValues,
   RegisterOptions,
   UseFormRegister,
-} from "react-hook-form";
+} from 'react-hook-form';
 
 /**
  * Compatibility layer between hook form and material form components.

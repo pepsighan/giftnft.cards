@@ -5,9 +5,9 @@ import {
   Grid,
   Stack,
   Typography,
-} from "@mui/material";
-import MyGiftCard from "components/MyGiftCard";
-import { useMyGifts } from "store/gifts";
+} from '@mui/material';
+import MyGiftCard from 'components/MyGiftCard';
+import { useMyGifts } from 'store/gifts';
 
 export default function MyGifts() {
   const { data: gifts, isLoading } = useMyGifts();

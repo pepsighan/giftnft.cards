@@ -1,12 +1,12 @@
-import type { AppProps } from "next/app";
-import { CssBaseline, ThemeProvider } from "@mui/material";
-import { NextSeo } from "next-seo";
-import theme from "utils/theme";
-import Head from "next/head";
-import { useAccount, useInitializeAccount } from "store/account";
-import { QueryClient, QueryClientProvider } from "react-query";
-import { SnackbarProvider } from "notistack";
-import { useCallback, useEffect } from "react";
+import type { AppProps } from 'next/app';
+import { CssBaseline, ThemeProvider } from '@mui/material';
+import { NextSeo } from 'next-seo';
+import theme from 'utils/theme';
+import Head from 'next/head';
+import { useAccount, useInitializeAccount } from 'store/account';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { SnackbarProvider } from 'notistack';
+import { useCallback, useEffect } from 'react';
 
 const queryClient = new QueryClient({
   defaultOptions: {

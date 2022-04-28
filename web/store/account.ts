@@ -1,11 +1,11 @@
-import create from "zustand";
-import { useCallback, useEffect } from "react";
-import { useAsync } from "react-use";
-import { getMetamask } from "utils/metamask";
-import config from "utils/config";
+import create from 'zustand';
+import { useCallback, useEffect } from 'react';
+import { useAsync } from 'react-use';
+import { getMetamask } from 'utils/metamask';
+import config from 'utils/config';
 
 type UseAccountStore = {
-  network: "mainnet" | "testnet";
+  network: 'mainnet' | 'testnet';
   accountId: string | null;
   chainId: number | null;
 };
@@ -14,7 +14,7 @@ type UseAccountStore = {
  * Stores the current account information in the wallet accessible to the app.
  */
 export const useAccount = create<UseAccountStore>(() => ({
-  network: "mainnet",
+  network: 'mainnet',
   accountId: null,
   chainId: null,
 }));
@@ -44,7 +44,7 @@ export function useInitializeAccount() {
     const onChainChanged = (chainId: number | string) => {
       let newChainId: number;
 
-      if (typeof chainId === "string") {
+      if (typeof chainId === 'string') {
         // Expecting hex-number.
         newChainId = Number(chainId);
       } else {
@@ -53,9 +53,9 @@ export function useInitializeAccount() {
 
       // Also, switch the network kind.
       if (newChainId === config.MAINNET_CHAIN_ID) {
-        useAccount.setState({ network: "mainnet" });
+        useAccount.setState({ network: 'mainnet' });
       } else if (newChainId === config.TESTNET_CHAIN_ID) {
-        useAccount.setState({ network: "testnet" });
+        useAccount.setState({ network: 'testnet' });
       }
 
       useAccount.setState({ chainId: newChainId });
@@ -64,22 +64,22 @@ export function useInitializeAccount() {
     // Fetch the account and chain ID when the app is loaded for the first time.
     const onInitialization = async () => {
       const accounts = await metamask.request({
-        method: "eth_accounts",
+        method: 'eth_accounts',
       });
       const chainID = await metamask.request({
-        method: "eth_chainId",
+        method: 'eth_chainId',
       });
       onAccountsChanged(accounts);
       onChainChanged(chainID);
     };
     onInitialization();
 
-    metamask.on("accountsChanged", onAccountsChanged);
-    metamask.on("chainChanged", onChainChanged);
+    metamask.on('accountsChanged', onAccountsChanged);
+    metamask.on('chainChanged', onChainChanged);
 
     return () => {
-      metamask.removeListener("accountsChanged", onAccountsChanged);
-      metamask.removeListener("chainChanged", onChainChanged);
+      metamask.removeListener('accountsChanged', onAccountsChanged);
+      metamask.removeListener('chainChanged', onChainChanged);
     };
   }, [metamask]);
 }

@@ -6,8 +6,8 @@ import {
   DialogTitle,
   Stack,
   Typography,
-} from "@mui/material";
-import { GiftCard } from "store/gifts";
+} from '@mui/material';
+import { GiftCard } from 'store/gifts';
 import {
   TelegramIcon,
   TelegramShareButton,
@@ -15,8 +15,8 @@ import {
   TwitterShareButton,
   WhatsappIcon,
   WhatsappShareButton,
-} from "react-share";
-import { useOwnerOfNFT } from "store/nft";
+} from 'react-share';
+import { useOwnerOfNFT } from 'store/nft';
 
 type ShareDialogProps = {
   open: boolean;
@@ -37,7 +37,7 @@ export default function ShareDialog({
     open
   );
 
-  const url = "https://giftnft.cards/my-gifts";
+  const url = 'https://giftnft.cards/my-gifts';
   const message = `I have sent a Gift Card NFT to your wallet (${owner}).\nTo access and unwrap your gift, open the Gift Card NFT app.`;
 
   return (

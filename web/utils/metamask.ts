@@ -1,7 +1,7 @@
-import detectEthereumProvider from "@metamask/detect-provider";
-import { ethers } from "ethers";
-import config from "utils/config";
-import { useAccount } from "store/account";
+import detectEthereumProvider from '@metamask/detect-provider';
+import { ethers } from 'ethers';
+import config from 'utils/config';
+import { useAccount } from 'store/account';
 
 /**
  * Gets metamask client.
@@ -32,7 +32,7 @@ export async function getContract(): Promise<ethers.Contract | null> {
 
   const network = useAccount.getState().network;
   const contractAddress =
-    network === "mainnet"
+    network === 'mainnet'
       ? config.MAINNET_CONTRACT_ADDRESS
       : config.TESTNET_CONTRACT_ADDRESS;
 

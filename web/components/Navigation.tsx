@@ -6,14 +6,14 @@ import {
   Select,
   Stack,
   Toolbar,
-} from "@mui/material";
-import { useAccount } from "store/account";
-import { ReactNode, useCallback } from "react";
-import MetamaskIcon from "components/MetamaskIcon";
-import { AiFillGithub } from "react-icons/ai";
-import config from "utils/config";
-import { getMetamask } from "utils/metamask";
-import { useAddNetwork } from "store/chain";
+} from '@mui/material';
+import { useAccount } from 'store/account';
+import { ReactNode, useCallback } from 'react';
+import MetamaskIcon from 'components/MetamaskIcon';
+import { AiFillGithub } from 'react-icons/ai';
+import config from 'utils/config';
+import { getMetamask } from 'utils/metamask';
+import { useAddNetwork } from 'store/chain';
 
 type NavigationProps = {
   children: ReactNode;
@@ -30,7 +30,7 @@ export default function Navigation({ children }: NavigationProps) {
       const network = ev.target.value;
 
       const chainId =
-        network === "mainnet"
+        network === 'mainnet'
           ? config.MAINNET_CHAIN_ID
           : config.TESTNET_CHAIN_ID;
       const metamask = await getMetamask();
@@ -38,8 +38,8 @@ export default function Navigation({ children }: NavigationProps) {
       // Try switching in the network in metamask. If it fails, it probably means the network does not exist.
       try {
         await metamask.request({
-          method: "wallet_switchEthereumChain",
-          params: [{ chainId: "0x" + chainId.toString(16) }],
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: '0x' + chainId.toString(16) }],
         });
       } catch (err: any) {
         // Add the network if it does not exist.
@@ -61,16 +61,16 @@ export default function Navigation({ children }: NavigationProps) {
       color="transparent"
       elevation={0}
       sx={{
-        borderBottom: "1px solid",
-        borderColor: "grey.300",
+        borderBottom: '1px solid',
+        borderColor: 'grey.300',
       }}
     >
-      <Toolbar sx={{ justifyContent: { xs: "center", md: "space-between" } }}>
+      <Toolbar sx={{ justifyContent: { xs: 'center', md: 'space-between' } }}>
         <Stack
           flex={1}
           alignItems="flex-start"
           sx={{
-            display: { xs: "none", md: "flex" },
+            display: { xs: 'none', md: 'flex' },
           }}
         >
           <Button
@@ -97,7 +97,7 @@ export default function Navigation({ children }: NavigationProps) {
             spacing={2}
             flex={1}
             sx={{
-              display: { xs: "none", md: "flex" },
+              display: { xs: 'none', md: 'flex' },
             }}
           >
             <Select size="small" value={network} onChange={onNetworkChange}>

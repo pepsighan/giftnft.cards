@@ -1,5 +1,5 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
-import { AiFillGithub } from "react-icons/ai";
+import { Box, Button, Stack, Typography } from '@mui/material';
+import { AiFillGithub } from 'react-icons/ai';
 
 export default function Footer() {
   return (
