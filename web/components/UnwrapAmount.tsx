@@ -1,21 +1,14 @@
-import { grey } from '@mui/material/colors';
 import { Grid, Paper, Typography } from '@mui/material';
-import { formatWeiAmount } from 'utils/metis';
+import { grey } from '@mui/material/colors';
 import { GiftCard } from 'store/gifts';
-import { ethers } from 'ethers';
+import { formatWeiAmount } from 'utils/metis';
 
 type UnwrapAmountProps = {
-  txFee: ethers.BigNumber | null;
   giftCard: GiftCard;
-  isMessage?: boolean;
 };
 
-export default function UnwrapAmount({
-  giftCard,
-  txFee,
-  isMessage,
-}: UnwrapAmountProps) {
-  const withdrawAmount = txFee ? giftCard.amount.sub(txFee) : giftCard.amount;
+export default function UnwrapAmount({ giftCard }: UnwrapAmountProps) {
+  const withdrawAmount = giftCard.amount;
 
   return (
     <>
@@ -26,47 +19,7 @@ export default function UnwrapAmount({
       >
         <Grid container spacing={1} sx={{ p: 2 }}>
           <Grid item xs={8}>
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              sx={{ textAlign: 'right' }}
-            >
-              Amount:
-            </Typography>
-          </Grid>
-          <Grid item xs={4}>
-            <Typography
-              variant="body2"
-              sx={{ textAlign: 'right', fontWeight: 'medium' }}
-            >
-              {formatWeiAmount(giftCard.amount.toString())}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={8}>
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              sx={{ textAlign: 'right' }}
-            >
-              Transaction Fee:
-            </Typography>
-          </Grid>
-          <Grid item xs={4}>
-            <Typography
-              variant="body2"
-              sx={{ textAlign: 'right', fontWeight: 'medium' }}
-            >
-              -{formatWeiAmount(txFee?.toString())}
-            </Typography>
-          </Grid>
-
-          <Grid item xs={8}>
-            <Typography
-              variant="body2"
-              color="textSecondary"
-              sx={{ textAlign: 'right' }}
-            >
+            <Typography variant="body2" color="textSecondary">
               Withdraw Amount:
             </Typography>
           </Grid>
@@ -77,21 +30,9 @@ export default function UnwrapAmount({
             >
               {formatWeiAmount(withdrawAmount.toString())}
             </Typography>
-            {withdrawAmount.lte(0) && (
-              <Typography variant="caption" color="error">
-                Cannot withdraw
-              </Typography>
-            )}
           </Grid>
         </Grid>
       </Paper>
-
-      {isMessage && (
-        <Typography variant="caption" color="textSecondary" sx={{ mt: 1 }}>
-          Actual transaction fee may differ based on various factors such as gas
-          prices and gas limit.
-        </Typography>
-      )}
     </>
   );
 }
