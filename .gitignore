@@ -1,3 +1,6 @@
 # Editor
 .vscode/
 .idea/
+
+# Misc
+.DS_Store
