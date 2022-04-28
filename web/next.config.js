@@ -1,13 +1,13 @@
-const { withSentryConfig } = require("@sentry/nextjs");
+const { withSentryConfig } = require('@sentry/nextjs');
 
 /** @type {import('next').NextConfig} */
 const moduleExports = {
   reactStrictMode: true,
   redirects: async () => [
     {
-      source: "/:path*",
-      has: [{ type: "host", value: "www.giftnft.cards" }],
-      destination: "https://giftnft.cards/:path*",
+      source: '/:path*',
+      has: [{ type: 'host', value: 'www.giftnft.cards' }],
+      destination: 'https://giftnft.cards/:path*',
       permanent: true,
     },
   ],
