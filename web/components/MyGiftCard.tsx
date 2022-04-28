@@ -1,8 +1,8 @@
-import { Box, Button } from "@mui/material";
-import { GiftCard } from "store/gifts";
-import { useBoolean } from "react-use";
-import { useCallback } from "react";
-import UnwrapConfirmation from "components/UnwrapConfirmation";
+import { Box, Button } from '@mui/material';
+import { GiftCard } from 'store/gifts';
+import { useBoolean } from 'react-use';
+import { useCallback } from 'react';
+import UnwrapConfirmation from 'components/UnwrapConfirmation';
 
 type MyGiftCardProps = {
   giftCard: GiftCard;
@@ -20,8 +20,8 @@ export default function MyGiftCard({ giftCard }: MyGiftCardProps) {
           width: 300 / 1.2,
           height: 400 / 1.2,
           mb: 2,
-          position: "relative",
-          cursor: !giftCard.isUnwrapped ? "pointer" : "inherit",
+          position: 'relative',
+          cursor: !giftCard.isUnwrapped ? 'pointer' : 'inherit',
         }}
         onClick={!giftCard.isUnwrapped ? onOpen : undefined}
       >
@@ -37,7 +37,7 @@ export default function MyGiftCard({ giftCard }: MyGiftCardProps) {
             variant="contained"
             color="inherit"
             size="small"
-            sx={{ position: "absolute", left: 8, top: 8, opacity: 0.6 }}
+            sx={{ position: 'absolute', left: 8, top: 8, opacity: 0.6 }}
             onClick={onOpen}
           >
             Unwrap Gift
@@ -50,13 +50,13 @@ export default function MyGiftCard({ giftCard }: MyGiftCardProps) {
             color="inherit"
             size="small"
             sx={{
-              position: "absolute",
+              position: 'absolute',
               left: 8,
               top: 8,
               opacity: 0.6,
-              "&.MuiButton-root.Mui-disabled": {
-                color: "grey.500",
-                bgcolor: "grey.300",
+              '&.MuiButton-root.Mui-disabled': {
+                color: 'grey.500',
+                bgcolor: 'grey.300',
               },
             }}
             disabled

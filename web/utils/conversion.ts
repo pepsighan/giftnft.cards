@@ -1,4 +1,4 @@
-import { GiftCard } from "store/gifts";
+import { GiftCard } from 'store/gifts';
 
 /**
  * Convert the GiftCard tuple from the smart contract into a js object.
@@ -19,7 +19,7 @@ export function convertGiftCardTupleToObject(tuple: any[]): GiftCard {
 
   let url: string = imageDataUrl;
   // This is an image stored in firebase storage.
-  if (imageDataUrl.startsWith("cards/")) {
+  if (imageDataUrl.startsWith('cards/')) {
     url = `https://storage.googleapis.com/giftnftcards.appspot.com/${imageDataUrl}`;
   }
 

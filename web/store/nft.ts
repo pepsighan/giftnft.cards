@@ -1,7 +1,7 @@
-import { useQuery } from "react-query";
-import { useCallback } from "react";
-import { getContract } from "utils/metamask";
-import { GiftCard } from "store/gifts";
+import { useQuery } from 'react-query';
+import { useCallback } from 'react';
+import { getContract } from 'utils/metamask';
+import { GiftCard } from 'store/gifts';
 
 /**
  * Gets the owner of the token.

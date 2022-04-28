@@ -1,9 +1,9 @@
-import { materialRegister } from "utils/materialForm";
-import { Button, IconButton, InputAdornment, TextField } from "@mui/material";
-import { MdClose } from "react-icons/md";
-import { useFormContext, useWatch } from "react-hook-form";
-import { useCallback } from "react";
-import { useAccount } from "store/account";
+import { materialRegister } from 'utils/materialForm';
+import { Button, IconButton, InputAdornment, TextField } from '@mui/material';
+import { MdClose } from 'react-icons/md';
+import { useFormContext, useWatch } from 'react-hook-form';
+import { useCallback } from 'react';
+import { useAccount } from 'store/account';
 
 /**
  * Text field to get the address of the recipient who is to receive the NFT gift card.
@@ -16,25 +16,25 @@ export default function RecipientTextField() {
     formState: { errors },
   } = useFormContext();
 
-  const recipient = useWatch({ control, name: "recipient" });
+  const recipient = useWatch({ control, name: 'recipient' });
 
   const onUseMyWallet = useCallback(() => {
     const accountId = useAccount.getState().accountId!;
-    setValue("recipient", accountId);
+    setValue('recipient', accountId);
   }, [setValue]);
 
   const onClearRecipient = useCallback(() => {
-    setValue("recipient", "");
+    setValue('recipient', '');
   }, [setValue]);
 
   return (
     <TextField
-      {...materialRegister(register, "recipient")}
+      {...materialRegister(register, 'recipient')}
       label="Recipient Wallet"
       fullWidth
       helperText={
         errors.recipient?.message ??
-        "This is the wallet of the person who you want to send this gift card to."
+        'This is the wallet of the person who you want to send this gift card to.'
       }
       error={!!errors.recipient}
       InputProps={{

@@ -1,5 +1,5 @@
-import { createTheme } from "@mui/material";
-import { indigo } from "@mui/material/colors";
+import { createTheme } from '@mui/material';
+import { indigo } from '@mui/material/colors';
 
 export default createTheme({
   palette: {
@@ -17,14 +17,14 @@ export default createTheme({
       },
       styleOverrides: {
         root: {
-          textTransform: "initial",
+          textTransform: 'initial',
           borderRadius: 20,
         },
       },
     },
     MuiTextField: {
       defaultProps: {
-        size: "small",
+        size: 'small',
         InputLabelProps: {
           shrink: true,
         },

@@ -7,19 +7,19 @@ import {
   DialogContent,
   Stack,
   Typography,
-} from "@mui/material";
+} from '@mui/material';
 import {
   GiftCard,
   useUnwrapFee,
   useUnwrapGift,
   useUnwrapGiftBySelf,
-} from "store/gifts";
-import { useAsyncFn } from "react-use";
-import { LoadingButton } from "@mui/lab";
-import UnwrapAmount from "components/UnwrapAmount";
-import { ethers } from "ethers";
-import { useSnackbar } from "notistack";
-import { useCallback, useState } from "react";
+} from 'store/gifts';
+import { useAsyncFn } from 'react-use';
+import { LoadingButton } from '@mui/lab';
+import UnwrapAmount from 'components/UnwrapAmount';
+import { ethers } from 'ethers';
+import { useSnackbar } from 'notistack';
+import { useCallback, useState } from 'react';
 
 type UnwrapConfirmationProps = {
   giftCard: GiftCard;
@@ -41,15 +41,15 @@ export default function UnwrapConfirmation({
     useAsyncFn(async () => {
       try {
         await unwrapGiftBySelf(giftCard.tokenId.toString());
-        enqueueSnackbar("Unwrapping your gift card...", {
-          variant: "success",
+        enqueueSnackbar('Unwrapping your gift card...', {
+          variant: 'success',
         });
         onClose();
       } catch (error: any) {
         enqueueSnackbar(
-          error.data?.message || "Failed to unwrap your gift card.",
+          error.data?.message || 'Failed to unwrap your gift card.',
           {
-            variant: "error",
+            variant: 'error',
           }
         );
       }
@@ -59,15 +59,15 @@ export default function UnwrapConfirmation({
   const [{ loading: unwrapping }, onGaslessUnwrap] = useAsyncFn(async () => {
     try {
       await unwrapGift(giftCard.tokenId.toString());
-      enqueueSnackbar("Unwrapping your gift card...", {
-        variant: "success",
+      enqueueSnackbar('Unwrapping your gift card...', {
+        variant: 'success',
       });
       onClose();
     } catch (error: any) {
       enqueueSnackbar(
-        error.data?.message || "Failed to unwrap your gift card.",
+        error.data?.message || 'Failed to unwrap your gift card.',
         {
-          variant: "error",
+          variant: 'error',
         }
       );
     }
@@ -100,13 +100,13 @@ export default function UnwrapConfirmation({
 
           <ButtonGroup sx={{ mt: 2 }}>
             <Button
-              variant={isGasless ? "contained" : "outlined"}
+              variant={isGasless ? 'contained' : 'outlined'}
               onClick={useCallback(() => setIsGasless(true), [])}
             >
               Gas-less Unwrap
             </Button>
             <Button
-              variant={!isGasless ? "contained" : "outlined"}
+              variant={!isGasless ? 'contained' : 'outlined'}
               onClick={useCallback(() => setIsGasless(false), [])}
             >
               Normal Unwrap
@@ -148,7 +148,7 @@ export default function UnwrapConfirmation({
           )}
         </Stack>
       </DialogContent>
-      <DialogActions sx={{ justifyContent: "flex-end", p: 2 }}>
+      <DialogActions sx={{ justifyContent: 'flex-end', p: 2 }}>
         <Button onClick={onClose}>Close</Button>
         {isGasless && (
           <LoadingButton
@@ -157,7 +157,7 @@ export default function UnwrapConfirmation({
             loading={unwrapping || unwrapFeeLoading}
             disabled={!isUnwrappable || withdrawAmount.lte(0)}
           >
-            {isUnwrappable ? "Unwrap" : "Unwrap Not Available"}
+            {isUnwrappable ? 'Unwrap' : 'Unwrap Not Available'}
           </LoadingButton>
         )}
 

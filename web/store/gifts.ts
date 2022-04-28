@@ -1,13 +1,13 @@
-import { useQuery, useQueryClient } from "react-query";
-import { useAccount } from "store/account";
-import { useCallback, useEffect } from "react";
-import { getContract, getEthers } from "utils/metamask";
-import { ethers } from "ethers";
-import { convertGiftCardTupleToObject } from "utils/conversion";
-import axios from "axios";
-import { getStorage, ref, StringFormat, uploadString } from "@firebase/storage";
-import { firebaseApp } from "utils/firebase";
-import { v4 as uuidv4 } from "uuid";
+import { useQuery, useQueryClient } from 'react-query';
+import { useAccount } from 'store/account';
+import { useCallback, useEffect } from 'react';
+import { getContract, getEthers } from 'utils/metamask';
+import { ethers } from 'ethers';
+import { convertGiftCardTupleToObject } from 'utils/conversion';
+import axios from 'axios';
+import { getStorage, ref, StringFormat, uploadString } from '@firebase/storage';
+import { firebaseApp } from 'utils/firebase';
+import { v4 as uuidv4 } from 'uuid';
 
 export type GiftCard = {
   tokenId: ethers.BigNumber;
@@ -29,7 +29,7 @@ export function useMyGifts() {
   const accountId = useAccount(useCallback((state) => state.accountId, []));
 
   const { refetch, ...rest } = useQuery<GiftCard[]>(
-    "use-my-gifts",
+    'use-my-gifts',
     useCallback<() => Promise<GiftCard[]>>(async () => {
       if (!accountId) {
         return [];
@@ -81,7 +81,7 @@ export function useMyGifts() {
  */
 export function useSentGifts() {
   return useQuery<GiftCard[]>(
-    "use-sent-gifts",
+    'use-sent-gifts',
     useCallback<() => Promise<GiftCard[]>>(async () => {
       const contract = await getContract();
       if (!contract) {
@@ -145,8 +145,8 @@ export function useMintGiftCard() {
 
       // Refetch the gifts.
       await Promise.all([
-        client.invalidateQueries("use-my-gifts"),
-        client.invalidateQueries("use-sent-gifts"),
+        client.invalidateQueries('use-my-gifts'),
+        client.invalidateQueries('use-sent-gifts'),
       ]);
     },
     [client]
@@ -182,8 +182,8 @@ export function useUnwrapGift() {
       });
       // Refetch the gifts.
       await Promise.all([
-        client.invalidateQueries("use-my-gifts"),
-        client.invalidateQueries("use-sent-gifts"),
+        client.invalidateQueries('use-my-gifts'),
+        client.invalidateQueries('use-sent-gifts'),
       ]);
     },
     [client]
@@ -207,8 +207,8 @@ export function useUnwrapGiftBySelf() {
 
       // Refetch the gifts.
       await Promise.all([
-        client.invalidateQueries("use-my-gifts"),
-        client.invalidateQueries("use-sent-gifts"),
+        client.invalidateQueries('use-my-gifts'),
+        client.invalidateQueries('use-sent-gifts'),
       ]);
     },
     [client]

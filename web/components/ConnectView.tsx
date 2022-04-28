@@ -1,6 +1,6 @@
-import { Box, Stack, Typography } from "@mui/material";
-import ConnectWallet from "components/ConnectWallet";
-import gift from "assets/gift.png";
+import { Box, Stack, Typography } from '@mui/material';
+import ConnectWallet from 'components/ConnectWallet';
+import gift from 'assets/gift.png';
 
 const width = 300 / 1.5;
 const height = 400 / 1.5;
@@ -8,7 +8,7 @@ const height = 400 / 1.5;
 export default function ConnectView() {
   return (
     <>
-      <Stack alignItems="center" sx={{ py: 3, bgcolor: "grey.100" }}>
+      <Stack alignItems="center" sx={{ py: 3, bgcolor: 'grey.100' }}>
         <Box
           component="img"
           src={gift.src}
@@ -22,15 +22,15 @@ export default function ConnectView() {
         justifyContent="center"
         spacing={4}
         display={{
-          xs: "none",
-          md: "flex",
+          xs: 'none',
+          md: 'flex',
         }}
         sx={{ mt: 4 }}
       >
         <Box
           sx={{
             borderRadius: 2,
-            overflow: "hidden",
+            overflow: 'hidden',
             width: width,
             height: height,
           }}
@@ -46,7 +46,7 @@ export default function ConnectView() {
         <Box
           sx={{
             borderRadius: 2,
-            overflow: "hidden",
+            overflow: 'hidden',
             width: width,
             height: height,
           }}
@@ -62,7 +62,7 @@ export default function ConnectView() {
         <Box
           sx={{
             borderRadius: 2,
-            overflow: "hidden",
+            overflow: 'hidden',
             width: width,
             height: height,
           }}
@@ -83,8 +83,8 @@ export default function ConnectView() {
           sx={{
             px: 2,
             mt: 3,
-            fontSize: { xs: "1.5rem", md: "2rem" },
-            fontWeight: "medium",
+            fontSize: { xs: '1.5rem', md: '2rem' },
+            fontWeight: 'medium',
           }}
         >
           Send your friends Gift Card NFTs
@@ -104,14 +104,14 @@ export default function ConnectView() {
           justifyContent="center"
           spacing={2}
           display={{
-            md: "none",
+            md: 'none',
           }}
           sx={{ mb: 2 }}
         >
           <Box
             sx={{
               borderRadius: 2,
-              overflow: "hidden",
+              overflow: 'hidden',
               width: width / 2,
               height: height / 2,
             }}
@@ -127,7 +127,7 @@ export default function ConnectView() {
           <Box
             sx={{
               borderRadius: 2,
-              overflow: "hidden",
+              overflow: 'hidden',
               width: width / 2,
               height: height / 2,
             }}
@@ -143,7 +143,7 @@ export default function ConnectView() {
           <Box
             sx={{
               borderRadius: 2,
-              overflow: "hidden",
+              overflow: 'hidden',
               width: width / 2,
               height: height / 2,
             }}

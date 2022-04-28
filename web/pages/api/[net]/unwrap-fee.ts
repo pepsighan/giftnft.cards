@@ -1,37 +1,38 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { ethers } from "ethers";
-import config, { getMetisNetworkConfig } from "utils/config";
-import { withSentry } from "@sentry/nextjs";
+import { withSentry } from '@sentry/nextjs';
+import { ethers } from 'ethers';
+import { NextApiRequest, NextApiResponse } from 'next';
+import config from 'utils/config';
+import getMetisNetworkConfig from 'utils/metisNetworkConfig';
 
 /**
  * Unwrap the gift card using the admin account itself so that the user does not have to pay for
  * the transaction.
  */
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "GET") {
+  if (req.method !== 'GET') {
     return res.status(404).send({
-      message: "Not found",
+      message: 'Not found',
     });
   }
 
   const { net } = req.query;
-  if (net !== "mainnet" && net !== "testnet") {
+  if (net !== 'mainnet' && net !== 'testnet') {
     return res.status(404).send({
-      message: "Not found",
+      message: 'Not found',
     });
   }
 
   const { tokenId, owner } = req.query ?? {};
   if (!tokenId || !owner) {
     return res.status(400).send({
-      message: "Requires `tokenId` and `owner` to be present",
+      message: 'Requires `tokenId` and `owner` to be present',
     });
   }
 
   const { endpoint, privateKey, contractAddress } = getMetisNetworkConfig(net);
   if (!endpoint || !privateKey) {
     return res.status(500).send({
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 
@@ -68,7 +69,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
   } catch (error) {
     console.error(error);
     res.status(500).send({
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 }

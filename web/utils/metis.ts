@@ -1,4 +1,4 @@
-import BigNumber from "bignumber.js";
+import BigNumber from 'bignumber.js';
 
 /**
  * Calculates the amount in Wei for the amount of $Metis.
@@ -34,7 +34,7 @@ export function calculateMintFee(amount: BigNumber): BigNumber {
  */
 export function formatAmount(amount?: string): string {
   if (!amount) {
-    return "";
+    return '';
   }
 
   return `${Number(amount)} METIS`;
@@ -45,7 +45,7 @@ export function formatAmount(amount?: string): string {
  */
 export function formatWeiAmount(amount?: string): string {
   if (!amount) {
-    return "";
+    return '';
   }
 
   const wei = new BigNumber(amount);

@@ -1,8 +1,9 @@
-import { NextApiRequest, NextApiResponse } from "next";
-import { ethers } from "ethers";
-import config, { getMetisNetworkConfig } from "utils/config";
-import { convertGiftCardTupleToObject } from "utils/conversion";
-import { withSentry } from "@sentry/nextjs";
+import { withSentry } from '@sentry/nextjs';
+import { ethers } from 'ethers';
+import { NextApiRequest, NextApiResponse } from 'next';
+import config from 'utils/config';
+import { convertGiftCardTupleToObject } from 'utils/conversion';
+import getMetisNetworkConfig from 'utils/metisNetworkConfig';
 
 /**
  * Get address of the wallet from signature.
@@ -24,30 +25,30 @@ function getAddressFromSignature(
  * the transaction.
  */
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") {
+  if (req.method !== 'POST') {
     return res.status(404).send({
-      message: "Not found",
+      message: 'Not found',
     });
   }
 
   const { net } = req.query;
-  if (net !== "mainnet" && net !== "testnet") {
+  if (net !== 'mainnet' && net !== 'testnet') {
     return res.status(404).send({
-      message: "Not found",
+      message: 'Not found',
     });
   }
 
   const { tokenId, owner, signature } = req.body ?? {};
   if (!tokenId || !owner || !signature) {
     return res.status(400).send({
-      message: "Requires `tokenId`, `owner` and `signature` to be present",
+      message: 'Requires `tokenId`, `owner` and `signature` to be present',
     });
   }
 
   const { endpoint, privateKey, contractAddress } = getMetisNetworkConfig(net);
   if (!endpoint || !privateKey) {
     return res.status(500).send({
-      message: "Internal server error",
+      message: 'Internal server error',
     });
   }
 
@@ -55,7 +56,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const isValidRequest = getAddressFromSignature(tokenId, owner, signature);
     if (!isValidRequest) {
       return res.status(400).send({
-        message: "Invalid signature",
+        message: 'Invalid signature',
       });
     }
 
@@ -75,7 +76,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     const giftCard = convertGiftCardTupleToObject(giftCardTuple);
     if (giftCard.isUnwrapped) {
       return res.status(400).send({
-        message: "Gift already unwrapped.",
+        message: 'Gift already unwrapped.',
       });
     }
 
@@ -93,7 +94,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (giftCard.amount.lte(txFee)) {
       // TODO: Log the event and send notification to me.
       return res.status(400).send({
-        message: "Transaction fee exceeds the gift amount.",
+        message: 'Transaction fee exceeds the gift amount.',
       });
     }
 
@@ -104,7 +105,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
       // TODO: Log the event and send notification to me.
       return res.status(500).send({
         message:
-          "Cannot unwrap your gift for free at the moment. You can unwrap using your own wallet.",
+          'Cannot unwrap your gift for free at the moment. You can unwrap using your own wallet.',
       });
     }
 
@@ -116,12 +117,12 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
 
     // TODO: Because transactions are not resolved using the async-await, list to events.
     res.status(200).send({
-      message: "Your gift has been unwrapped.",
+      message: 'Your gift has been unwrapped.',
     });
   } catch (error: any) {
     console.error(error);
     res.status(500).send({
-      message: error.message || "Internal Server Error",
+      message: error.message || 'Internal Server Error',
     });
   }
 }

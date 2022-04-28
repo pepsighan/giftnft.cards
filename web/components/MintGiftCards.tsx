@@ -6,40 +6,40 @@ import {
   Stack,
   TextField,
   Typography,
-} from "@mui/material";
-import { LoadingButton } from "@mui/lab";
-import { useCallback, useRef, useState } from "react";
-import { FormProvider, useForm } from "react-hook-form";
-import { materialRegister } from "utils/materialForm";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useMintGiftCard } from "store/gifts";
-import { useSnackbar } from "notistack";
-import html2canvas from "html2canvas";
-import SentGifts from "components/SentGifts";
-import RecipientTextField from "components/RecipientTextField";
-import { useAsyncFn } from "react-use";
-import { calculateMintFee, calculateWei, minGiftValue } from "utils/metis";
-import MintFee from "components/MintFee";
-import ChineseNewYearCard from "components/cards/ChineseNewYearCard";
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
-import GenericGiftCard from "components/cards/GenericGiftCard";
-import CupidCard from "components/cards/CupidCard";
+} from '@mui/material';
+import { LoadingButton } from '@mui/lab';
+import { useCallback, useRef, useState } from 'react';
+import { FormProvider, useForm } from 'react-hook-form';
+import { materialRegister } from 'utils/materialForm';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMintGiftCard } from 'store/gifts';
+import { useSnackbar } from 'notistack';
+import html2canvas from 'html2canvas';
+import SentGifts from 'components/SentGifts';
+import RecipientTextField from 'components/RecipientTextField';
+import { useAsyncFn } from 'react-use';
+import { calculateMintFee, calculateWei, minGiftValue } from 'utils/metis';
+import MintFee from 'components/MintFee';
+import ChineseNewYearCard from 'components/cards/ChineseNewYearCard';
+import { MdChevronLeft, MdChevronRight } from 'react-icons/md';
+import GenericGiftCard from 'components/cards/GenericGiftCard';
+import CupidCard from 'components/cards/CupidCard';
 
 const giftCards = [GenericGiftCard, ChineseNewYearCard, CupidCard];
 
 const schema = z
   .object({
-    message: z.string().min(1, "Required"),
-    name: z.string().min(1, "Required"),
-    amount: z.string().regex(/^([0-9]*[.])?[0-9]{0,9}$/, "Not a valid amount"),
+    message: z.string().min(1, 'Required'),
+    name: z.string().min(1, 'Required'),
+    amount: z.string().regex(/^([0-9]*[.])?[0-9]{0,9}$/, 'Not a valid amount'),
     recipient: z
       .string()
-      .regex(/^0x[a-fA-F0-9]{40}$/, "Invalid wallet address"),
+      .regex(/^0x[a-fA-F0-9]{40}$/, 'Invalid wallet address'),
   })
   .refine((data) => calculateWei(data.amount).gte(minGiftValue), {
-    message: "A gift card needs to have at least 0.1 Metis",
-    path: ["amount"],
+    message: 'A gift card needs to have at least 0.1 Metis',
+    path: ['amount'],
   });
 
 type SchemaType = z.infer<typeof schema>;
@@ -49,10 +49,10 @@ export default function MintGiftCard() {
 
   const form = useForm({
     defaultValues: {
-      message: "",
-      name: "",
-      amount: "1",
-      recipient: "",
+      message: '',
+      name: '',
+      amount: '1',
+      recipient: '',
     },
     resolver: zodResolver(schema),
   });
@@ -73,7 +73,7 @@ export default function MintGiftCard() {
           width: 300,
           height: 400,
         });
-        const imageDataUrl = canvas.toDataURL("image/webp");
+        const imageDataUrl = canvas.toDataURL('image/webp');
 
         const giftAmount = calculateWei(state.amount);
         const mintFee = calculateMintFee(giftAmount);
@@ -87,12 +87,12 @@ export default function MintGiftCard() {
           imageDataUrl,
         });
         reset();
-        enqueueSnackbar("Successfully minted your gift card.", {
-          variant: "success",
+        enqueueSnackbar('Successfully minted your gift card.', {
+          variant: 'success',
         });
       } catch (error: any) {
-        enqueueSnackbar(error.data?.message || "Failed to mint a gift card.", {
-          variant: "error",
+        enqueueSnackbar(error.data?.message || 'Failed to mint a gift card.', {
+          variant: 'error',
         });
       }
     },
@@ -128,7 +128,7 @@ export default function MintGiftCard() {
             <Stack alignItems="flex-end">
               <Box>
                 <Stack
-                  direction={{ xs: "column", md: "row" }}
+                  direction={{ xs: 'column', md: 'row' }}
                   justifyContent="center"
                   alignItems="center"
                   spacing={2}
@@ -136,7 +136,7 @@ export default function MintGiftCard() {
                   <IconButton
                     onClick={onPreviousCard}
                     sx={{
-                      transform: { xs: "rotateZ(90deg)", md: "rotateZ(0deg)" },
+                      transform: { xs: 'rotateZ(90deg)', md: 'rotateZ(0deg)' },
                     }}
                   >
                     <MdChevronLeft />
@@ -145,7 +145,7 @@ export default function MintGiftCard() {
                   <IconButton
                     onClick={onNextCard}
                     sx={{
-                      transform: { xs: "rotateZ(90deg)", md: "rotateZ(0deg)" },
+                      transform: { xs: 'rotateZ(90deg)', md: 'rotateZ(0deg)' },
                     }}
                   >
                     <MdChevronRight />
@@ -153,7 +153,7 @@ export default function MintGiftCard() {
                 </Stack>
                 <Typography
                   textAlign="center"
-                  sx={{ mt: 1, fontSize: "0.75rem", color: "grey.600" }}
+                  sx={{ mt: 1, fontSize: '0.75rem', color: 'grey.600' }}
                 >
                   Select a gift card of your choosing.
                 </Typography>
@@ -166,23 +166,23 @@ export default function MintGiftCard() {
               <Stack
                 component="form"
                 spacing={2}
-                sx={{ maxWidth: 400, width: "100%" }}
+                sx={{ maxWidth: 400, width: '100%' }}
                 onSubmit={handleSubmit(onMintGiftCard)}
               >
                 <RecipientTextField />
                 <TextField
-                  {...materialRegister(register, "amount")}
+                  {...materialRegister(register, 'amount')}
                   label="Amount"
                   fullWidth
                   helperText={
                     errors.amount?.message ??
-                    "This is the amount that will be stored in the gift card."
+                    'This is the amount that will be stored in the gift card.'
                   }
                   error={!!errors.amount}
                 />
                 <MintFee />
                 <TextField
-                  {...materialRegister(register, "message")}
+                  {...materialRegister(register, 'message')}
                   label="Message"
                   multiline
                   minRows={2}
@@ -191,7 +191,7 @@ export default function MintGiftCard() {
                   error={!!errors.message}
                 />
                 <TextField
-                  {...materialRegister(register, "name")}
+                  {...materialRegister(register, 'name')}
                   label="Your name"
                   fullWidth
                   helperText={errors.name?.message}
